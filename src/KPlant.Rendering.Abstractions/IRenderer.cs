@@ -9,7 +9,7 @@ namespace KPlant.Rendering
 
         RenderingOptions Options { get; }
         
-        Task Render<TModel>(TModel model);
+        Task Render(object model);
 
         void Write(string value);
 

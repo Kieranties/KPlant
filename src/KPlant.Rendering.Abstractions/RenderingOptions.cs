@@ -7,7 +7,7 @@ namespace KPlant.Rendering
     public class RenderingOptions
     {
         private readonly Dictionary<Type, Type> _map = new Dictionary<Type, Type>();
-
+        
         public RenderingOptions(string lineEnding = null, Encoding encoding = null)
         {
             LineEnding = lineEnding ?? Environment.NewLine;

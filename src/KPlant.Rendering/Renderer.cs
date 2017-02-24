@@ -2,29 +2,46 @@
 using System.Collections.Concurrent;
 using System.IO;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace KPlant.Rendering
 {
     public class Renderer : IRenderer
     {
         protected ConcurrentDictionary<Type, object> _rendererCache = new ConcurrentDictionary<Type, object>();
-
-        public Renderer(Stream stream, RenderingOptions options)
-        {
-            Options = options ?? throw new ArgumentNullException(nameof(options));
+        
+        public Renderer(Stream stream, RenderingOptions options = null)
+        {            
             Stream = stream ?? throw new ArgumentNullException(nameof(stream));
+            Options = options ?? new RenderingOptions();
         }
 
         public virtual Stream Stream { get; protected set; }
 
         public virtual RenderingOptions Options { get; protected set; }
         
-        public async Task Render<TModel>(TModel model)
+        public async Task Render(object model)
         {
-            var renderer = Resolve<TModel>();
-            await renderer.Render(model, this);
-        }
+            //TODO: Fix up the reflection here - blurgh
+            var modelType = model.GetType();
+            var renderer = _rendererCache.GetOrAdd(modelType, _ =>
+            {
+                var type = Options.ResolveRenderer(modelType);
+                if (type != null)
+                {
+                    return Activator.CreateInstance(type);
+                }
+                throw new Exception($"Could not resolve renderer for {modelType}");
+            });
 
+            var task = (Task)renderer
+                .GetType()
+                .GetRuntimeMethod("Render", new[] { modelType, typeof(IRenderer) })
+                .Invoke(renderer, new[] { model, this });
+
+            await task.ConfigureAwait(false);
+        }
+        
         public void Write(string value)
         {
             var bytes = Encode(value);
@@ -41,21 +58,6 @@ namespace KPlant.Rendering
 
         public Task WriteLineAsync(string value) => WriteAsync($"{value}{Options.LineEnding}");        
 
-        protected byte[] Encode(string value) => Options.Encoding.GetBytes(value);
-
-        protected virtual IModelRenderer<TModel> Resolve<TModel>()
-        {
-            var instance = _rendererCache.GetOrAdd(typeof(TModel), _ =>
-            {
-                var type = Options.ResolveRenderer(typeof(TModel));
-                if (type != null)
-                {
-                    return Activator.CreateInstance(type);
-                }
-                throw new Exception($"Could not resolve renderer for {typeof(TModel)}");
-            });
-
-            return instance as IModelRenderer<TModel>;
-        }
+        protected byte[] Encode(string value) => Options.Encoding.GetBytes(value);        
     }
 }
