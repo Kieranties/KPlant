@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.4</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KPlant.Rendering.Abstractions\KPlant.Rendering.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>
