@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26206.0
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F141E2D0-F9B8-4ADB-A19A-7B6FF4CA19A1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{B54371FF-B920-46C8-8D55-6B19DBB43EBF}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KPlant.Sequence.Model", "src\KPlant.Sequence.Model\KPlant.Sequence.Model.csproj", "{020EE90E-A0B6-464A-9184-B5D841C91931}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KPlant.Sequence.Abstractions", "src\KPlant.Sequence.Abstractions\KPlant.Sequence.Abstractions.csproj", "{09F59A52-7642-4C43-9BA2-D142E13A3892}"
@@ -49,5 +53,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{020EE90E-A0B6-464A-9184-B5D841C91931} = {F141E2D0-F9B8-4ADB-A19A-7B6FF4CA19A1}
+		{09F59A52-7642-4C43-9BA2-D142E13A3892} = {F141E2D0-F9B8-4ADB-A19A-7B6FF4CA19A1}
 	EndGlobalSection
 EndGlobal
