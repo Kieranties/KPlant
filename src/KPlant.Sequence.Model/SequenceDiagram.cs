@@ -1,4 +1,5 @@
 ﻿using KPlant.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,6 +14,9 @@ namespace KPlant.Sequence.Model
 
         public async Task Render(IRenderer renderer)
         {
+            if (renderer == null)
+                throw new ArgumentNullException(nameof(renderer));
+
             await renderer.WriteLineAsync(START_UML);
             foreach (var entry in Elements)
             {

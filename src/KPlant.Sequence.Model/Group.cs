@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using KPlant.Rendering;
+using System;
 
 namespace KPlant.Sequence.Model
 {
@@ -16,12 +17,15 @@ namespace KPlant.Sequence.Model
 
         public async Task Render(IRenderer renderer)
         {
+            if (renderer == null)
+                throw new ArgumentNullException(nameof(renderer));
+
             await WriteGroup(Type.ToString(), this, renderer);
             await renderer.WriteLineAsync("end");
         }
 
         protected async Task WriteGroup(string type, Group group, IRenderer renderer)
-        {
+        {            
             var startLine = type;
             if (!string.IsNullOrWhiteSpace(group.Label))
                 startLine += $" {group.Label}";

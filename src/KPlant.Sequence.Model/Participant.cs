@@ -12,6 +12,11 @@ namespace KPlant.Sequence.Model
 
         public async Task Render(IRenderer renderer)
         {
+            if (renderer == null)
+                throw new ArgumentNullException(nameof(renderer));
+
+            if (string.IsNullOrWhiteSpace(Id))
+                throw new MissingRenderingDataException(nameof(Id), GetType());
             var line = $"{Type} {Id}";
             await renderer.WriteLineAsync(line);
         }

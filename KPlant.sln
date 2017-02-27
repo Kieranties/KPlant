@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KPlant.Core", "src\KPlant.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KPlant.Sequence.IntegrationTests", "test\KPlant.Sequence.IntegrationTests\KPlant.Sequence.IntegrationTests.csproj", "{34608BD9-B317-4C60-9004-AE78B3987656}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KPlant.Tests.Core", "test\KPlant.Tests.Core\KPlant.Tests.Core.csproj", "{246CBB83-B146-495B-A7F1-F9A2F0793FAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -124,6 +126,18 @@ Global
 		{34608BD9-B317-4C60-9004-AE78B3987656}.Release|x64.Build.0 = Release|x64
 		{34608BD9-B317-4C60-9004-AE78B3987656}.Release|x86.ActiveCfg = Release|x86
 		{34608BD9-B317-4C60-9004-AE78B3987656}.Release|x86.Build.0 = Release|x86
+		{246CBB83-B146-495B-A7F1-F9A2F0793FAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{246CBB83-B146-495B-A7F1-F9A2F0793FAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{246CBB83-B146-495B-A7F1-F9A2F0793FAF}.Debug|x64.ActiveCfg = Debug|x64
+		{246CBB83-B146-495B-A7F1-F9A2F0793FAF}.Debug|x64.Build.0 = Debug|x64
+		{246CBB83-B146-495B-A7F1-F9A2F0793FAF}.Debug|x86.ActiveCfg = Debug|x86
+		{246CBB83-B146-495B-A7F1-F9A2F0793FAF}.Debug|x86.Build.0 = Debug|x86
+		{246CBB83-B146-495B-A7F1-F9A2F0793FAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{246CBB83-B146-495B-A7F1-F9A2F0793FAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{246CBB83-B146-495B-A7F1-F9A2F0793FAF}.Release|x64.ActiveCfg = Release|x64
+		{246CBB83-B146-495B-A7F1-F9A2F0793FAF}.Release|x64.Build.0 = Release|x64
+		{246CBB83-B146-495B-A7F1-F9A2F0793FAF}.Release|x86.ActiveCfg = Release|x86
+		{246CBB83-B146-495B-A7F1-F9A2F0793FAF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -138,5 +152,6 @@ Global
 		{74C7ECF0-75E9-4F91-860E-85FC6703DC5B} = {B54371FF-B920-46C8-8D55-6B19DBB43EBF}
 		{320CAEA8-768C-41E1-A3FE-F22347DD039C} = {F141E2D0-F9B8-4ADB-A19A-7B6FF4CA19A1}
 		{34608BD9-B317-4C60-9004-AE78B3987656} = {8F2AA7C1-77E1-42A4-AC4F-95F56026C325}
+		{246CBB83-B146-495B-A7F1-F9A2F0793FAF} = {B54371FF-B920-46C8-8D55-6B19DBB43EBF}
 	EndGlobalSection
 EndGlobal

@@ -34,6 +34,32 @@ namespace KPlant.Sequence.IntegrationTests
             await AssertDiagram(diagram, Expectations.Basic);
         }
 
+        [Fact]
+        public async void DeclaringParticipant()
+        {            
+            var particpants = new[]
+            {
+                new Participant{ Id = "Foo1", Type = ParticipantType.Actor },
+                new Participant{ Id = "Foo2", Type = ParticipantType.Boundary },
+                new Participant{ Id = "Foo3", Type = ParticipantType.Control },
+                new Participant{ Id = "Foo4", Type = ParticipantType.Entity },
+                new Participant{ Id = "Foo5", Type = ParticipantType.Database }
+            };
+            var messages = new[]
+            {
+                new Message{ From = particpants[0], To = particpants[1], Label = "To boundary"},
+                new Message{ From = particpants[0], To = particpants[2], Label = "To control"},
+                new Message{ From = particpants[0], To = particpants[3], Label = "To entity"},
+                new Message{ From = particpants[0], To = particpants[4], Label = "To database"},
+            };
+
+            var diagram = new SequenceDiagram();
+            diagram.Elements.AddRange(particpants);
+            diagram.Elements.AddRange(messages);
+
+            await AssertDiagram(diagram, Expectations.DeclaringParticipant);
+        }
+
         private async Task AssertDiagram(SequenceDiagram diagram, string expectation)
         {
             string result = null;

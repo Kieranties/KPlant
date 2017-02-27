@@ -18,11 +18,11 @@ Bob --> Alice : Another authentication Response
 ";
 
         public static string DeclaringParticipant = @"@startuml
-actor Foo1
-boundary Foo2
-control Foo3
-entity Foo4
-database Foo5
+Actor Foo1
+Boundary Foo2
+Control Foo3
+Entity Foo4
+Database Foo5
 Foo1 -> Foo2 : To boundary
 Foo1 -> Foo3 : To control
 Foo1 -> Foo4 : To entity
