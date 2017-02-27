@@ -1,9 +1,6 @@
 ﻿using NSubstitute;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace KPlant.Rendering.UnitTests

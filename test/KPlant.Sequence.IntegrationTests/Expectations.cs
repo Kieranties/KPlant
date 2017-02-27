@@ -4,7 +4,7 @@ using System.Text;
 
 // Expectations from http://plantuml.com/PlantUML_Language_Reference_Guide.pdf
 
-namespace Kieranties.PlantUml.Sequence.Tests
+namespace KPlant.Sequence.IntegrationTests
 {
     public class Expectations
     {
@@ -13,7 +13,7 @@ namespace Kieranties.PlantUml.Sequence.Tests
 Alice -> Bob : Authentication Request
 Bob --> Alice : Authentication Response
 Alice -> Bob : Another authentication Request
-Bob --> Alice : another authentication Response
+Bob --> Alice : Another authentication Response
 @enduml
 ";
 

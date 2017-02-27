@@ -1,6 +1,8 @@
-﻿namespace KPlant.Sequence
+﻿using KPlant.Rendering;
+
+namespace KPlant.Sequence
 {
-    public interface ISequenceElement
+    public interface ISequenceElement : IRenderable
     {
 
     }

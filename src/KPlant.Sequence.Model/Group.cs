@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using KPlant.Rendering;
 
 namespace KPlant.Sequence.Model
 {
@@ -11,6 +13,24 @@ namespace KPlant.Sequence.Model
         public GroupType Type { get; set; } = GroupType.Group;
 
         public List<Group> Else { get; } = new List<Group>();
+
+        public async Task Render(IRenderer renderer)
+        {
+            await WriteGroup(Type.ToString(), this, renderer);
+            await renderer.WriteLineAsync("end");
+        }
+
+        protected async Task WriteGroup(string type, Group group, IRenderer renderer)
+        {
+            var startLine = type;
+            if (!string.IsNullOrWhiteSpace(group.Label))
+                startLine += $" {group.Label}";
+
+            await renderer.WriteLineAsync(startLine);
+            group.Elements.ForEach(async e => await e.Render(renderer));
+            group.Else.ForEach(async e => await WriteGroup("else", e, renderer));
+
+        }
     }
 
     public enum GroupType

@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KPlant.Rendering.Abstractions\KPlant.Rendering.Abstractions.csproj" />
+    <ProjectReference Include="..\KPlant.Core\KPlant.Core.csproj" />
   </ItemGroup>
 
 </Project>
