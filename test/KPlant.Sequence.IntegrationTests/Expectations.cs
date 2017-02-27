@@ -31,9 +31,9 @@ Foo1 -> Foo5 : To database
 ";
 
         public static string ColourAndAliasing = @"@startuml
-actor Bob #red
-participant Alice
-participant ""I have a really\nlong name"" as L #99FF99
+Actor Bob #red
+Participant Alice
+Participant ""I have a really\nlong name"" as L #99FF99
 Alice -> Bob : Authentication Request
 Bob -> Alice : Authentication Response
 Bob -> L : Log transaction

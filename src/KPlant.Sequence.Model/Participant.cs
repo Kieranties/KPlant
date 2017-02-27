@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using KPlant.Rendering;
+using System.Collections.Generic;
 
 namespace KPlant.Sequence.Model
 {
@@ -10,6 +11,10 @@ namespace KPlant.Sequence.Model
 
         public ParticipantType Type { get; set; } = ParticipantType.Participant;
 
+        public string Label { get; set; }
+
+        public string Colour { get; set; }
+
         public async Task Render(IRenderer renderer)
         {
             if (renderer == null)
@@ -17,8 +22,23 @@ namespace KPlant.Sequence.Model
 
             if (string.IsNullOrWhiteSpace(Id))
                 throw new MissingRenderingDataException(nameof(Id), GetType());
-            var line = $"{Type} {Id}";
-            await renderer.WriteLineAsync(line);
+
+            await renderer.WriteAsync(Type.ToString());
+            if (!string.IsNullOrWhiteSpace(Label))
+            {                
+                await renderer.WriteAsync($" \"{Label.FixNewlinesForOutput()}\" as {Id}");
+            }
+            else
+            {
+                await renderer.WriteAsync($" {Id}");
+            }
+
+            if (!string.IsNullOrWhiteSpace(Colour))
+            {
+                await renderer.WriteAsync($" #{Colour}");
+            }
+            
+            await renderer.WriteLineAsync(string.Empty);
         }
     }
 

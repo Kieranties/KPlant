@@ -12,6 +12,8 @@ namespace KPlant.Sequence.Model
                 
         public ArrowType Type { get; set; } = ArrowType.Normal;
 
+        public string Colour { get; set; }
+
         public ArrowHead Head { get; set; } = new ArrowHead();
 
         public async Task Render(IRenderer renderer)
@@ -22,8 +24,13 @@ namespace KPlant.Sequence.Model
             if (Head == null)
                 throw new MissingRenderingDataException(nameof(Head), typeof(Arrow));
 
-            await renderer.WriteAsync("-");            
-            
+            await renderer.WriteAsync("-");
+
+            if (!string.IsNullOrWhiteSpace(Colour))
+            {
+                await renderer.WriteAsync($"[#{Colour}]");
+            }
+
             // Line type
             if (Type == ArrowType.Dotted)
             {

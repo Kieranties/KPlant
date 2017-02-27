@@ -17,6 +17,7 @@ namespace KPlant.Sequence.Model.UnitTests
             Assert.Equal(ArrowHeadThickness.Normal, sut.Head.Thickness);
             Assert.Equal(ArrowHeadParts.Normal, sut.Head.Parts);
             Assert.Equal(ArrowHeadStatus.Normal, sut.Head.Status);
+            Assert.Equal(null, sut.Colour);
         }
 
         [Fact]
@@ -60,6 +61,19 @@ namespace KPlant.Sequence.Model.UnitTests
             await sut.Render(renderer);
 
             Assert.Equal("-->", renderer.Value);
+        }
+
+        [Theory]
+        [InlineData("red")]
+        [InlineData("0000FF")]
+        public async void Render_WithColour_Renders(string colour)
+        {
+            var sut = new Arrow { Colour = colour };
+            var renderer = new StringRenderer();
+
+            await sut.Render(renderer);
+
+            Assert.Equal($"-[#{colour}]>", renderer.Value);
         }
     }
 }

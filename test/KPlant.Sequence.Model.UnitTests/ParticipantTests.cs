@@ -1,4 +1,5 @@
 ﻿using KPlant.Rendering;
+using KPlant.Tests.Core;
 using NSubstitute;
 using System;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace KPlant.Sequence.Model.UnitTests
 
             Assert.Null(sut.Id);
             Assert.Equal(ParticipantType.Participant, sut.Type);
+            Assert.Null(sut.Label);
+            Assert.Null(sut.Colour);
         }
 
         [Fact]
@@ -45,13 +48,53 @@ namespace KPlant.Sequence.Model.UnitTests
             var participants = Enum.GetValues(typeof(ParticipantType))
                                     .Cast<ParticipantType>()
                                     .Select(t => new Participant { Id = "xxx", Type = t });
-            
-            foreach(var p in participants)
+
+            foreach (var p in participants)
             {
-                var renderer = Substitute.For<IRenderer>();
+                var renderer = new StringRenderer();
                 await p.Render(renderer);
-                await renderer.Received(1).WriteLineAsync($"{p.Type} { p.Id}");
+                Assert.Equal($"{p.Type} {p.Id}\r\n", renderer.Value);
             }
         }
-    }
+
+        [Fact]
+        public async void Render_WithLabel_Renders()
+        {
+            var sut = new Participant { Id = "MyId", Label = "This is a label" };
+            var renderer = new StringRenderer();
+
+            await sut.Render(renderer);
+
+            Assert.Equal("Participant \"This is a label\" as MyId\r\n", renderer.Value);
+        }
+
+        [Theory]
+        [InlineData("\r\n")]
+        [InlineData("\n")]
+        public async void Render_LabelWithNewlines_Renders(string newline)
+        {
+            var sut = new Participant { Id = "MyId", Label = "This is a" + newline + "long label" };
+            var renderer = new StringRenderer();
+
+            await sut.Render(renderer);
+
+            var expected = "Participant \"This is a\\nlong label\" as MyId\r\n";
+            var actual = renderer.Value;
+            Assert.Equal(expected, actual);
+        }
+
+
+        [Theory]
+        [InlineData("red")]
+        [InlineData("99FF99")]
+        public async void Render_WithColour_Renders(string colour)
+        {
+            var sut = new Participant { Id = "MyId", Colour = colour };
+            var renderer = new StringRenderer();
+
+            await sut.Render(renderer);
+
+            Assert.Equal($"Participant MyId #{colour}\r\n", renderer.Value);
+        }
+    }    
 }

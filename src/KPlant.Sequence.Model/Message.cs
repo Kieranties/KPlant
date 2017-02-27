@@ -33,7 +33,7 @@ namespace KPlant.Sequence.Model
             var end = $" {To.Id}";
             if (!string.IsNullOrWhiteSpace(Label))
             {
-                end += $" : {Label}";
+                end += $" : {Label.FixNewlinesForOutput()}";
             }
 
             await renderer.WriteLineAsync(end);
