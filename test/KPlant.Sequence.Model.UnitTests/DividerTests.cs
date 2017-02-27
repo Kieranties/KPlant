@@ -39,7 +39,7 @@ namespace KPlant.Sequence.Model.UnitTests
         [Theory]
         [InlineData("", "")]
         [InlineData("My Label", "My Label")]
-        [InlineData("My\r\nLong\r\nLabel\r\n", "My\\nLong\\nLabel")]
+        [InlineData("My\r\nLong\r\nLabel", "My\\nLong\\nLabel")]
         [InlineData(null, "")]
         [InlineData("This has some special characters (){}\"\"##", "This has some special characters (){}\"\"##")]
         public async void Render_WithLabel_Renders(string label, string expected)
