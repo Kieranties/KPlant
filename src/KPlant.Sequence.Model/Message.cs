@@ -6,11 +6,11 @@ namespace KPlant.Sequence.Model
 {
     public class Message : ISequenceElement
     {
-        public Participant From { get; set; }
+        public Participant From { get; set; } = null;
 
-        public Participant To { get; set; }
+        public Participant To { get; set; } = null;
 
-        public string Label { get; set; }
+        public string Label { get; set; } = null;
 
         public Arrow Arrow { get; set; } = Arrow.Default;
 

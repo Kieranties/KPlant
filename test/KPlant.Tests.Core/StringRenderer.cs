@@ -8,6 +8,8 @@ namespace KPlant.Tests.Core
     public class StringRenderer : IRenderer
     {
         private StringBuilder _sb = new StringBuilder();
+        private int _indentCount = 0;
+
 
         public void Write(string value)
         {
@@ -31,6 +33,21 @@ namespace KPlant.Tests.Core
             return Task.CompletedTask;
         }
 
+        public void Indent(int count)
+        {
+            _indentCount++;
+        }
+
+        public void Outdent(int count)
+        {
+            if (_indentCount != 0)
+            {
+                _indentCount--;
+            }
+        }
+
         public string Value => _sb.ToString();
+
+        public int IndentCount => _indentCount;
     }
 }

@@ -9,7 +9,7 @@ namespace KPlant.Sequence.Model
     {
         public List<ISequenceElement> Elements { get; } = new List<ISequenceElement>();
 
-        public string Label { get; set; }
+        public string Label { get; set; } = null;
 
         public GroupType Type { get; set; } = GroupType.Group;
 
@@ -26,7 +26,7 @@ namespace KPlant.Sequence.Model
 
         protected async Task WriteGroup(string type, Group group, IRenderer renderer)
         {            
-            var startLine = type;
+            var startLine = type.ToLowerInvariant();
             if (!string.IsNullOrWhiteSpace(group.Label))
                 startLine += $" {group.Label}";
 

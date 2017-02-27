@@ -18,11 +18,11 @@ Bob --> Alice : Another authentication Response
 ";
 
         public static string DeclaringParticipant = @"@startuml
-Actor Foo1
-Boundary Foo2
-Control Foo3
-Entity Foo4
-Database Foo5
+actor Foo1
+boundary Foo2
+control Foo3
+entity Foo4
+database Foo5
 Foo1 -> Foo2 : To boundary
 Foo1 -> Foo3 : To control
 Foo1 -> Foo4 : To entity
@@ -31,9 +31,9 @@ Foo1 -> Foo5 : To database
 ";
 
         public static string ColourAndAliasing = @"@startuml
-Actor Bob #red
-Participant Alice
-Participant ""I have a really\nlong name"" as L #99FF99
+actor Bob #red
+participant Alice
+participant ""I have a really\nlong name"" as L #99FF99
 Alice -> Bob : Authentication Request
 Bob -> Alice : Authentication Response
 Bob -> L : Log transaction
@@ -139,21 +139,31 @@ Alice -> Bob : message 6
 ";
 
         public static string Grouping = @"@startuml
-Alice -> Bob: Authentication Request
+Alice -> Bob : Authentication Request
 alt successful case
-    Bob -> Alice: Authentication Accepted    
+    Bob -> Alice : Authentication Accepted    
 else some kind of failure
-    Bob -> Alice: Authentication Failure
+    Bob -> Alice : Authentication Failure
     group My own label
     	Alice -> Log : Log attack start
         loop 1000 times
-            Alice -> Bob: DNS Attack
+            Alice -> Bob : DNS Attack
         end
     	Alice -> Log : Log attack end
     end    
 else Another type of failure
-   Bob -> Alice: Please repeat   
+   Bob -> Alice : Please repeat   
 end
+@enduml
+";
+
+        public static string Divider = @"@startuml
+== Initialization ==
+Alice -> Bob: Authentication Request
+Bob --> Alice: Authentication Response
+== Repetition ==
+Alice -> Bob: Another authentication Request
+Bob --> Alice: Another authentication Response
 @enduml
 ";
     }

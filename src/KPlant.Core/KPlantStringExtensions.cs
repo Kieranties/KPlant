@@ -9,5 +9,10 @@
                 .Replace("\r\n", "\\n")
                 .Replace("\n", "\\n");
         }
+
+        public static string EnsureQuotes(this string value)
+        {
+            return $"\"{value}\"";
+        }
     }
 }

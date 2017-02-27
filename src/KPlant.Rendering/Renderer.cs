@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace KPlant.Rendering
 {
     public class Renderer : IRenderer
-    {        
+    {
         public Renderer(Stream stream, RenderingOptions options = null)
         {            
             Stream = stream ?? throw new ArgumentNullException(nameof(stream));
@@ -30,8 +30,8 @@ namespace KPlant.Rendering
             await Stream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
         }
         
-        public Task WriteLineAsync(string value) => WriteAsync($"{value}{Options.LineEnding}");        
-
+        public Task WriteLineAsync(string value) => WriteAsync($"{value}{Options.LineEnding}");
+        
         protected byte[] Encode(string value) => Options.Encoding.GetBytes(value);        
-    }
+    }    
 }

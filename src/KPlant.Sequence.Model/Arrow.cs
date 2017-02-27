@@ -12,7 +12,7 @@ namespace KPlant.Sequence.Model
                 
         public ArrowType Type { get; set; } = ArrowType.Normal;
 
-        public string Colour { get; set; }
+        public string Colour { get; set; } = null;
 
         public ArrowHead Head { get; set; } = new ArrowHead();
 

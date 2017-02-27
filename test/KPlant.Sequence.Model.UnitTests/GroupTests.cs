@@ -35,7 +35,7 @@ namespace KPlant.Sequence.Model.UnitTests
 
             await sut.Render(renderer);
 
-            Assert.Equal("Group\r\nend\r\n", renderer.Value);
+            Assert.Equal("group\r\nend\r\n", renderer.Value);
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace KPlant.Sequence.Model.UnitTests
 
             await sut.Render(renderer);
 
-            Assert.Equal("Group My Label\r\nend\r\n", renderer.Value);
+            Assert.Equal("group My Label\r\nend\r\n", renderer.Value);
         }
 
         [Fact]
@@ -60,7 +60,7 @@ namespace KPlant.Sequence.Model.UnitTests
             {
                 var renderer = new StringRenderer();
                 await g.Render(renderer);
-                Assert.Equal($"{g.Type} {g.Label}\r\nend\r\n", renderer.Value);
+                Assert.Equal($"{g.Type.ToString().ToLowerInvariant()} {g.Label}\r\nend\r\n", renderer.Value);
             }
         }
 
@@ -77,7 +77,7 @@ namespace KPlant.Sequence.Model.UnitTests
             var renderer = new StringRenderer();
             await sut.Render(renderer);
 
-            Assert.Equal("Group\r\nParticipant Alpha\r\nParticipant Beta\r\nParticipant Gamma\r\nend\r\n", renderer.Value);
+            Assert.Equal("group\r\nparticipant Alpha\r\nparticipant Beta\r\nparticipant Gamma\r\nend\r\n", renderer.Value);
         }
 
         [Fact]
@@ -96,7 +96,7 @@ namespace KPlant.Sequence.Model.UnitTests
             var renderer = new StringRenderer();
             await sut.Render(renderer);
 
-            Assert.Equal("Group\r\nelse\r\nelse alt\r\nControl other\r\nend\r\n", renderer.Value);
+            Assert.Equal("group\r\nelse\r\nelse alt\r\ncontrol other\r\nend\r\n", renderer.Value);
         }
     }
 }

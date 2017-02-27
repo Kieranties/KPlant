@@ -53,7 +53,7 @@ namespace KPlant.Sequence.Model.UnitTests
             {
                 var renderer = new StringRenderer();
                 await p.Render(renderer);
-                Assert.Equal($"{p.Type} {p.Id}\r\n", renderer.Value);
+                Assert.Equal($"{p.Type.ToString().ToLowerInvariant()} {p.Id}\r\n", renderer.Value);
             }
         }
 
@@ -65,7 +65,7 @@ namespace KPlant.Sequence.Model.UnitTests
 
             await sut.Render(renderer);
 
-            Assert.Equal("Participant \"This is a label\" as MyId\r\n", renderer.Value);
+            Assert.Equal("participant \"This is a label\" as MyId\r\n", renderer.Value);
         }
 
         [Theory]
@@ -78,7 +78,7 @@ namespace KPlant.Sequence.Model.UnitTests
 
             await sut.Render(renderer);
 
-            var expected = "Participant \"This is a\\nlong label\" as MyId\r\n";
+            var expected = "participant \"This is a\\nlong label\" as MyId\r\n";
             var actual = renderer.Value;
             Assert.Equal(expected, actual);
         }
@@ -94,7 +94,7 @@ namespace KPlant.Sequence.Model.UnitTests
 
             await sut.Render(renderer);
 
-            Assert.Equal($"Participant MyId #{colour}\r\n", renderer.Value);
+            Assert.Equal($"participant MyId #{colour}\r\n", renderer.Value);
         }
     }    
 }

@@ -13,6 +13,6 @@ namespace KPlant.Rendering
 
         public string LineEnding { get; }
 
-        public Encoding Encoding { get; }
+        public Encoding Encoding { get; }  
     }
 }
