@@ -4,7 +4,7 @@ namespace KPlant.Sequence.Model
 {
     public class Group : ISequenceElement
     {
-        public List<Message> Messages { get; } = new List<Message>();
+        public List<ISequenceElement> Elements { get; } = new List<ISequenceElement>();
 
         public string Label { get; set; }
 

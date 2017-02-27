@@ -9,7 +9,7 @@ namespace KPlant.Sequence.Model.UnitTests
         {
             var sut = new Group();
 
-            Assert.Empty(sut.Messages);
+            Assert.Empty(sut.Elements);
             Assert.Null(sut.Label);
             Assert.Equal(GroupType.Group, sut.Type);
             Assert.Empty(sut.Else);
