@@ -15,7 +15,7 @@ namespace KPlant.Sequence.Model
 
             await renderer.WriteAsync("==");
             if(!string.IsNullOrWhiteSpace(Label))
-                await renderer.WriteAsync(Label.FixNewlinesForOutput());
+                await renderer.WriteAsync($" {Label.FixNewlinesForOutput()} ");
             await renderer.WriteLineAsync("==");
         }
     }

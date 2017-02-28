@@ -2,15 +2,21 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Collections;
+using KPlant.Model;
 
 namespace KPlant.Sequence.Model
 {
-    public class SequenceDiagram : IRenderable
+    public class SequenceDiagram : IRenderable, IElementCollection<ISequenceElement>
     {
         private const string START_UML = "@startuml";
         private const string END_UML = "@enduml";
 
-        public List<ISequenceElement> Elements { get; } = new List<ISequenceElement>();
+        public List<ISequenceElement> Elements { get; set; } = new List<ISequenceElement>();
+
+        public IEnumerator<ISequenceElement> GetEnumerator() => Elements.GetEnumerator();
+
+        public void Add(ISequenceElement element) => Elements.Add(element);
 
         public async Task Render(IRenderer renderer)
         {
@@ -24,5 +30,7 @@ namespace KPlant.Sequence.Model
             }
             await renderer.WriteLineAsync(END_UML);
         }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

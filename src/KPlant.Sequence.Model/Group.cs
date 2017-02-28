@@ -2,18 +2,24 @@
 using System.Threading.Tasks;
 using KPlant.Rendering;
 using System;
+using KPlant.Model;
+using System.Collections;
 
 namespace KPlant.Sequence.Model
 {
-    public class Group : ISequenceElement
+    public class Group : ISequenceElement, IElementCollection<ISequenceElement>
     {
-        public List<ISequenceElement> Elements { get; } = new List<ISequenceElement>();
+        public List<ISequenceElement> Elements { get; set; } = new List<ISequenceElement>();
 
         public string Label { get; set; } = null;
 
         public GroupType Type { get; set; } = GroupType.Group;
 
-        public List<Group> Else { get; } = new List<Group>();
+        public List<Group> Else { get; set; } = new List<Group>();
+
+        public void Add(ISequenceElement element) => Elements.Add(element);
+
+        public IEnumerator<ISequenceElement> GetEnumerator() => Elements.GetEnumerator();
 
         public async Task Render(IRenderer renderer)
         {
@@ -35,6 +41,8 @@ namespace KPlant.Sequence.Model
             group.Else.ForEach(async e => await WriteGroup("else", e, renderer));
 
         }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     public enum GroupType

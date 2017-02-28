@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xunit;
+using System.Collections;
 
 namespace KPlant.Sequence.Model.UnitTests
 {
@@ -74,6 +75,38 @@ namespace KPlant.Sequence.Model.UnitTests
 
             await sut.Render(renderer);
             Assert.Equal(expected, renderer.Value);
+        }
+    }
+
+
+    public class Test : IEnumerable<ISequenceElement>
+    {
+        public void Add(ISequenceElement item)
+        {
+            throw new NotImplementedException();
+        }
+        
+        public IEnumerator<ISequenceElement> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }               
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
+    public class blah
+    {
+        public blah()
+        {
+            var x = new Test
+            {
+                new Message(),
+                new Participant()
+            };
         }
     }
 }

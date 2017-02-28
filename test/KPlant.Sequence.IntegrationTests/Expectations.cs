@@ -159,11 +159,11 @@ end
 
         public static string Divider = @"@startuml
 == Initialization ==
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
+Alice -> Bob : Authentication Request
+Bob --> Alice : Authentication Response
 == Repetition ==
-Alice -> Bob: Another authentication Request
-Bob --> Alice: Another authentication Response
+Alice -> Bob : Another authentication Request
+Bob --> Alice : Another authentication Response
 @enduml
 ";
     }
