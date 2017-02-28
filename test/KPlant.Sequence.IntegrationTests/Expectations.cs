@@ -193,5 +193,15 @@ Alice -> Bob : Another authentication Request
 Bob --> Alice : Another authentication Response
 @enduml
 ";
+
+
+        public static string Ref = @"@startuml
+participant Alice
+actor Bob
+ref over Alice, Bob : init
+Alice -> Bob : hello
+ref over Bob : This can be on\nseveral lines
+@enduml
+";
     }
 }

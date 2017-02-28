@@ -331,6 +331,23 @@ namespace KPlant.Sequence.IntegrationTests
             await AssertDiagram(diagram, Expectations.Divider);
         }
 
+        [Fact]
+        public async void Ref()
+        {
+            var bob = new Participant { Id = "Bob", Type = ParticipantType.Actor };
+            var alice = new Participant { Id = "Alice" };
+
+            var diagram = new SequenceDiagram
+            {
+                alice,bob,
+                new Ref { Over = {alice,bob}, Label = "init"},
+                new Message { From = alice, To = bob, Label = "hello" },
+                new Ref { Over = { bob }, Label = "This can be on\nseveral lines" }
+            };
+
+            await AssertDiagram(diagram, Expectations.Ref);
+        }
+
         private async Task AssertDiagram(SequenceDiagram diagram, string expectation, string indentMarker = "\t")
         {
             string result = null;
