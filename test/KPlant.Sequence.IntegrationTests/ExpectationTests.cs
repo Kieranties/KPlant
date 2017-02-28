@@ -348,6 +348,74 @@ namespace KPlant.Sequence.IntegrationTests
             await AssertDiagram(diagram, Expectations.Ref);
         }
 
+        [Fact]
+        public async void Delay()
+        {
+            var alice = new Participant { Id = "Alice" };
+            var bob = new Participant { Id = "Bob" };
+
+            var diagram = new SequenceDiagram
+            {
+                new Message { From = alice, To = bob, Label = "Authentication Request"},
+                new Delay(),
+                new Message { From = bob, To = alice, Label = "Authentication Response", Arrow = Arrow.Dotted},
+                new Delay { Label = "5 minutes later" },
+                new Message { From = bob, To = alice, Label = "Bye !", Arrow = Arrow.Dotted},
+            };
+
+            await AssertDiagram(diagram, Expectations.Delay);
+        }
+
+        [Fact]
+        public async void Space()
+        {
+            var alice = new Participant { Id = "Alice" };
+            var bob = new Participant { Id = "Bob" };
+
+            var diagram = new SequenceDiagram
+            {
+                new Message { From = alice, To = bob, Label = "message 1"},
+                new Message { From = bob, To = alice, Label = "ok", Arrow = Arrow.Dotted },
+                new Space(),
+                new Message { From = alice, To = bob, Label = "message 2"},
+                new Message { From = bob, To = alice, Label = "ok", Arrow = Arrow.Dotted },
+                new Space { Height = 45 },
+                new Message { From = alice, To = bob, Label = "message 3"},
+                new Message { From = bob, To = alice, Label = "ok", Arrow = Arrow.Dotted },
+            };
+
+            await AssertDiagram(diagram, Expectations.Space);
+        }
+
+        [Fact]
+        public async void Activation()
+        {
+            var user = new Participant { Id = "User" };
+            var a = new Participant { Id = "A" };
+            var b = new Participant { Id = "B" };
+            var c = new Participant { Id = "C" };
+                       
+
+            var diagram = new SequenceDiagram
+            {
+                user,
+                new Message { From = user, To = a, Label = "DoWork"},
+                new ActivationStatus { Participant = a },
+                new Message { From = a, To = b, Label = "<< createRequest >>"},
+                new ActivationStatus { Participant = b },
+                new Message { From = b, To = c, Label = "DoWork"},
+                new ActivationStatus { Participant = c },
+                new Message { From = c, To = b, Label = "WorkDone", Arrow = Arrow.Dotted },
+                new ActivationStatus { Participant = c, State = ActivationState.Destroy },
+                new Message { From = b, To = a, Label = "RequestCreated", Arrow = Arrow.Dotted },
+                new ActivationStatus { Participant = b, State = ActivationState.Deactivate },
+                new Message { From = a, To = user, Label = "Done" },
+                new ActivationStatus { Participant = a, State = ActivationState.Deactivate },
+            };
+
+            await AssertDiagram(diagram, Expectations.Activation);
+        }
+
         private async Task AssertDiagram(SequenceDiagram diagram, string expectation, string indentMarker = "\t")
         {
             string result = null;

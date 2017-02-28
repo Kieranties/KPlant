@@ -203,5 +203,40 @@ Alice -> Bob : hello
 ref over Bob : This can be on\nseveral lines
 @enduml
 ";
+        public static string Delay = @"@startuml
+Alice -> Bob : Authentication Request
+...
+Bob --> Alice : Authentication Response
+...5 minutes later...
+Bob --> Alice : Bye !
+@enduml
+";
+        public static string Space = @"@startuml
+Alice -> Bob : message 1
+Bob --> Alice : ok
+|||
+Alice -> Bob : message 2
+Bob --> Alice : ok
+||45||
+Alice -> Bob : message 3
+Bob --> Alice : ok
+@enduml
+";
+        public static string Activation = @"@startuml
+participant User
+User -> A : DoWork
+activate A
+A -> B : << createRequest >>
+activate B
+B -> C : DoWork
+activate C
+C --> B : WorkDone
+destroy C
+B --> A : RequestCreated
+deactivate B
+A -> User : Done
+deactivate A
+@enduml
+";
     }
 }
