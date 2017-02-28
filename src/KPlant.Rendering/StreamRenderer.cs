@@ -4,33 +4,31 @@ using System.Threading.Tasks;
 
 namespace KPlant.Rendering
 {
-    public class Renderer : IRenderer
+    public class StreamRenderer : Renderer<StreamRendererOptions>
     {
-        public Renderer(Stream stream, RenderingOptions options = null)
+        public StreamRenderer(Stream stream, StreamRendererOptions options = null)
+            :base(options ?? new StreamRendererOptions())
         {            
             Stream = stream ?? throw new ArgumentNullException(nameof(stream));
-            Options = options ?? new RenderingOptions();
         }
 
-        public virtual Stream Stream { get; protected set; }
-
-        public virtual RenderingOptions Options { get; protected set; }
+        protected Stream Stream { get; set; }
         
-        public void WriteLine(string value)
+        public override void WriteLine(string value)
         {
             var bytes = Encode(value);
             Stream.Write(bytes, 0, bytes.Length);
         }
         
-        public async Task WriteLineAsync(string value)
+        public override async Task WriteLineAsync(string value)
         {
             var bytes = Encode(value);
             await Stream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
         }
-
+                       
         protected byte[] Encode(string value)
         {
-            return Options.Encoding.GetBytes($"{value}{Options.LineEnding}");
+            return Options.Encoding.GetBytes(FormatForWrite(value));
         }
     }    
 }

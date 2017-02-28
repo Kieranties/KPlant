@@ -27,6 +27,7 @@ namespace KPlant.Sequence.Model
                 throw new ArgumentNullException(nameof(renderer));
 
             await WriteGroup(Type.ToString(), this, renderer);
+            
             await renderer.WriteLineAsync("end");
         }
 
@@ -37,9 +38,10 @@ namespace KPlant.Sequence.Model
                 output += $" {group.Label}";
 
             await renderer.WriteLineAsync(output);
+            renderer.Indent();
             group.Elements.ForEach(async e => await e.Render(renderer));
-            group.Else.ForEach(async e => await WriteGroup("else", e, renderer));
-
+            renderer.Outdent();
+            group.Else.ForEach(async e => await WriteGroup("else", e, renderer));           
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

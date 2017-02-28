@@ -249,8 +249,10 @@ namespace KPlant.Sequence.IntegrationTests
             await AssertDiagram(diagram, Expectations.SplittingDiagrams);
         }
 
-        [Fact(Skip = "Indenting currently not supported")]
-        public async void Grouping()
+        [Theory]
+        [InlineData("\t", Expectations.Grouping)]
+        [InlineData("    ", Expectations.GroupingWithSpaces)]
+        public async void Grouping(string indentMarker, string expectation)
         {
             var bob = new Participant { Id = "Bob" };
             var alice = new Participant { Id = "Alice" };
@@ -307,7 +309,7 @@ namespace KPlant.Sequence.IntegrationTests
                 }
             };
 
-            await AssertDiagram(diagram, Expectations.Grouping);
+            await AssertDiagram(diagram, expectation, indentMarker);
         }
 
         [Fact]
@@ -329,13 +331,15 @@ namespace KPlant.Sequence.IntegrationTests
             await AssertDiagram(diagram, Expectations.Divider);
         }
 
-        private async Task AssertDiagram(SequenceDiagram diagram, string expectation)
+        private async Task AssertDiagram(SequenceDiagram diagram, string expectation, string indentMarker = "\t")
         {
             string result = null;
 
             using (var stream = new MemoryStream())
             {
-                var renderer = new Renderer(stream);
+                var options = new StreamRendererOptions { IndentMarker = indentMarker };
+                var renderer = new StreamRenderer(stream, options);
+                
                 await diagram.Render(renderer);
 
                 stream.Seek(0, SeekOrigin.Begin);
@@ -347,6 +351,9 @@ namespace KPlant.Sequence.IntegrationTests
             }
 
 
+            _output.WriteLine("=== EXPECTED ===");
+            _output.WriteLine(expectation);
+            _output.WriteLine("=== ACTUAL ===");
             _output.WriteLine(result);
             Assert.Equal(expectation, result);
         }

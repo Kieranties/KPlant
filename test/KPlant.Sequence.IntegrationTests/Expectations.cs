@@ -138,24 +138,51 @@ Alice -> Bob : message 6
 @enduml
 ";
 
-        public static string Grouping = @"@startuml
+
+        /// <summary>
+        /// This verbatim string contains tabs!
+        /// </summary>
+        public const string Grouping = @"@startuml
 Alice -> Bob : Authentication Request
 alt successful case
-    Bob -> Alice : Authentication Accepted    
+	Bob -> Alice : Authentication Accepted
 else some kind of failure
-    Bob -> Alice : Authentication Failure
-    group My own label
-    	Alice -> Log : Log attack start
-        loop 1000 times
-            Alice -> Bob : DNS Attack
-        end
-    	Alice -> Log : Log attack end
-    end    
+	Bob -> Alice : Authentication Failure
+	group My own label
+		Alice -> Log : Log attack start
+		loop 1000 times
+			Alice -> Bob : DNS Attack
+		end
+		Alice -> Log : Log attack end
+	end
 else Another type of failure
-   Bob -> Alice : Please repeat   
+	Bob -> Alice : Please repeat
 end
 @enduml
 ";
+
+        /// <summary>
+        /// This verbatim string contains spaces!
+        /// </summary>
+        public const string GroupingWithSpaces = @"@startuml
+Alice -> Bob : Authentication Request
+alt successful case
+    Bob -> Alice : Authentication Accepted
+else some kind of failure
+    Bob -> Alice : Authentication Failure
+    group My own label
+        Alice -> Log : Log attack start
+        loop 1000 times
+            Alice -> Bob : DNS Attack
+        end
+        Alice -> Log : Log attack end
+    end
+else Another type of failure
+    Bob -> Alice : Please repeat
+end
+@enduml
+";
+
 
         public static string Divider = @"@startuml
 == Initialization ==

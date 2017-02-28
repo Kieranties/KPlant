@@ -76,7 +76,7 @@ namespace KPlant.Sequence.Model.UnitTests
             var renderer = new StringRenderer();
             await sut.Render(renderer);
 
-            Assert.Equal("group\r\nparticipant Alpha\r\nparticipant Beta\r\nparticipant Gamma\r\nend\r\n", renderer.Value);
+            Assert.Equal("group\r\n\tparticipant Alpha\r\n\tparticipant Beta\r\n\tparticipant Gamma\r\nend\r\n", renderer.Value);
         }
 
         [Fact]
@@ -98,7 +98,7 @@ namespace KPlant.Sequence.Model.UnitTests
             var renderer = new StringRenderer();
             await sut.Render(renderer);
 
-            Assert.Equal("group\r\nelse\r\nelse alt\r\ncontrol other\r\nend\r\n", renderer.Value);
+            Assert.Equal("group\r\nelse\r\nelse alt\r\n\tcontrol other\r\nend\r\n", renderer.Value);
         }
     }
 }
