@@ -13,10 +13,12 @@ namespace KPlant.Sequence.Model
             if (renderer == null)
                 throw new ArgumentNullException(nameof(renderer));
 
-            await renderer.WriteAsync("==");
+            var output = "==";
             if(!string.IsNullOrWhiteSpace(Label))
-                await renderer.WriteAsync($" {Label.FixNewlinesForOutput()} ");
-            await renderer.WriteLineAsync("==");
+                output += $" {Label.FixNewlinesForOutput()} ";
+            output += "==";
+
+            await renderer.WriteLineAsync(output);
         }
     }
 }

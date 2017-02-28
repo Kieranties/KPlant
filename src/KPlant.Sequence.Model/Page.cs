@@ -13,11 +13,11 @@ namespace KPlant.Sequence.Model
             if (renderer == null)
                 throw new ArgumentNullException(nameof(renderer));
 
-            await renderer.WriteAsync("newpage");
+            var output = "newpage";
             if (!string.IsNullOrWhiteSpace(Title))
-                await renderer.WriteAsync(" " + Title.FixNewlinesForOutput());
+                output += $" {Title.FixNewlinesForOutput()}";
 
-            await renderer.WriteLineAsync(string.Empty);
+            await renderer.WriteLineAsync(output);
         }
     }
 }

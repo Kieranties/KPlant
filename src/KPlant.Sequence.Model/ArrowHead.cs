@@ -4,17 +4,14 @@ using System;
 
 namespace KPlant.Sequence.Model
 {
-    public class ArrowHead : IRenderable
+    public class ArrowHead : IStringRenderable
     {        
         public ArrowHeadThickness Thickness { get; set; } = ArrowHeadThickness.Normal;
         public ArrowHeadParts Parts { get; set; } = ArrowHeadParts.Normal;
         public ArrowHeadStatus Status { get; set; } = ArrowHeadStatus.Normal;
 
-        public async Task Render(IRenderer renderer)
+        public string Render()
         {
-            if (renderer == null)
-                throw new ArgumentNullException(nameof(renderer));
-
             string headSymbol = null;
             switch (Parts)
             {
@@ -44,7 +41,7 @@ namespace KPlant.Sequence.Model
                     break;
             }
 
-            await renderer.WriteAsync(headSymbol);
+            return headSymbol;
         }
     }
 

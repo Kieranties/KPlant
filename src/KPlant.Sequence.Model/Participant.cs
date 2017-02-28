@@ -22,22 +22,22 @@ namespace KPlant.Sequence.Model
             if (string.IsNullOrWhiteSpace(Id))
                 throw new MissingRenderingDataException(nameof(Id), GetType());
 
-            await renderer.WriteAsync(Type.ToString().ToLowerInvariant());
+            var output = Type.ToString().ToLowerInvariant();
             if (!string.IsNullOrWhiteSpace(Label))
             {                
-                await renderer.WriteAsync($" \"{Label.FixNewlinesForOutput()}\" as {Id}");
+                output += $" {Label.FixNewlinesForOutput().EnsureQuotes()} as {Id}";
             }
             else
             {
-                await renderer.WriteAsync($" {Id}");
+                output += $" {Id}";
             }
 
             if (!string.IsNullOrWhiteSpace(Colour))
             {
-                await renderer.WriteAsync($" #{Colour}");
+                output += $" #{Colour}";
             }
             
-            await renderer.WriteLineAsync(string.Empty);
+            await renderer.WriteLineAsync(output);
         }
     }
 

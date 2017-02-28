@@ -2,7 +2,7 @@
 
 namespace KPlant.Model
 {
-    public interface IElementCollection<TElement> //: IEnumerable<TElement>
+    public interface IElementCollection<TElement> : IEnumerable<TElement>
     {
         List<TElement> Elements { get; set; }
 

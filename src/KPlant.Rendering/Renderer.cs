@@ -16,22 +16,21 @@ namespace KPlant.Rendering
 
         public virtual RenderingOptions Options { get; protected set; }
         
-        public void Write(string value)
+        public void WriteLine(string value)
         {
             var bytes = Encode(value);
             Stream.Write(bytes, 0, bytes.Length);
         }
-
-        public void WriteLine(string value) => Write($"{value}{Options.LineEnding}");
-
-        public async Task WriteAsync(string value)
+        
+        public async Task WriteLineAsync(string value)
         {
             var bytes = Encode(value);
             await Stream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
         }
-        
-        public Task WriteLineAsync(string value) => WriteAsync($"{value}{Options.LineEnding}");
-        
-        protected byte[] Encode(string value) => Options.Encoding.GetBytes(value);        
+
+        protected byte[] Encode(string value)
+        {
+            return Options.Encoding.GetBytes($"{value}{Options.LineEnding}");
+        }
     }    
 }

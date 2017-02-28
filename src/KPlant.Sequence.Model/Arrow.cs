@@ -4,7 +4,7 @@ using KPlant.Rendering;
 
 namespace KPlant.Sequence.Model
 {
-    public class Arrow : IRenderable
+    public class Arrow : IStringRenderable
     {
         // Simple statics
         public static Arrow Default => new Arrow();
@@ -16,28 +16,27 @@ namespace KPlant.Sequence.Model
 
         public ArrowHead Head { get; set; } = new ArrowHead();
 
-        public async Task Render(IRenderer renderer)
+        public string Render()
         {
-            if (renderer == null)
-                throw new ArgumentNullException(nameof(renderer));
-
             if (Head == null)
                 throw new MissingRenderingDataException(nameof(Head), typeof(Arrow));
 
-            await renderer.WriteAsync("-");
+            var output = "-";
 
             if (!string.IsNullOrWhiteSpace(Colour))
             {
-                await renderer.WriteAsync($"[#{Colour}]");
+                output += $"[#{Colour}]";
             }
 
             // Line type
             if (Type == ArrowType.Dotted)
             {
-                await renderer.WriteAsync("-");
+                output += "-";
             }
 
-            await Head.Render(renderer);
+            output += Head.Render();
+
+            return output;
         }
     }
 

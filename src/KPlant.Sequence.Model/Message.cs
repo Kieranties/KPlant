@@ -28,15 +28,16 @@ namespace KPlant.Sequence.Model
             if (Arrow == null)
                 throw new MissingRenderingDataException(nameof(Arrow), typeof(Message));
 
-            await renderer.WriteAsync($"{From.Id} ");
-            await Arrow.Render(renderer);
+            var output = $"{From.Id} {Arrow.Render()}";            
             var end = $" {To.Id}";
             if (!string.IsNullOrWhiteSpace(Label))
             {
                 end += $" : {Label.FixNewlinesForOutput()}";
             }
 
-            await renderer.WriteLineAsync(end);
+            output += end;
+
+            await renderer.WriteLineAsync(output);
         }
     }
 }

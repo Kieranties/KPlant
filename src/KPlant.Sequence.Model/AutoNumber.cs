@@ -19,15 +19,16 @@ namespace KPlant.Sequence.Model
             if (renderer == null)
                 throw new ArgumentNullException(nameof(renderer));
 
-            await renderer.WriteAsync("autonumber");
+            var output = "autonumber";            
             if (Command != AutoNumberCommand.Start)
             {
-                await renderer.WriteAsync($" {Command.ToString().ToLowerInvariant()}");
+                output += $" {Command.ToString().ToLowerInvariant()}";
             }
-            if (Start.HasValue) await renderer.WriteAsync($" {Start}");
-            if (Increment.HasValue) await renderer.WriteAsync($" {Increment}");
-            if (!string.IsNullOrWhiteSpace(Format)) await renderer.WriteAsync($" {Format.EnsureQuotes()}");
-            await renderer.WriteLineAsync(string.Empty);
+            if (Start.HasValue) output += $" {Start}";
+            if (Increment.HasValue) output += $" {Increment}";
+            if (!string.IsNullOrWhiteSpace(Format)) output += $" {Format.EnsureQuotes()}";
+
+            await renderer.WriteLineAsync(output);
         }
     }
 

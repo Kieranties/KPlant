@@ -32,11 +32,11 @@ namespace KPlant.Sequence.Model
 
         protected async Task WriteGroup(string type, Group group, IRenderer renderer)
         {            
-            var startLine = type.ToLowerInvariant();
+            var output = type.ToLowerInvariant();
             if (!string.IsNullOrWhiteSpace(group.Label))
-                startLine += $" {group.Label}";
+                output += $" {group.Label}";
 
-            await renderer.WriteLineAsync(startLine);
+            await renderer.WriteLineAsync(output);
             group.Elements.ForEach(async e => await e.Render(renderer));
             group.Else.ForEach(async e => await WriteGroup("else", e, renderer));
 
