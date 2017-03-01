@@ -4,15 +4,22 @@ using KPlant.Rendering;
 
 namespace KPlant.Sequence.Model
 {
-    public class AutoNumber : ISequenceElement
+    public partial class Numbering : ISequenceElement
     {
-        public int? Start { get; set; } = null;
+        public Numbering(AutoNumberCommand command, int? seed = null, int? increment = null)
+        {
+            Seed = seed;
+            Increment = increment;
+            Command = command;
+        }
+                
+        public int? Seed { get; }
 
-        public int? Increment { get; set; } = null;
+        public int? Increment { get; }
 
         public string Format { get; set; } = null;
 
-        public AutoNumberCommand Command { get; set; } = AutoNumberCommand.Start;
+        public AutoNumberCommand Command { get; }
 
         public async Task Render(IRenderer renderer)
         {
@@ -24,7 +31,7 @@ namespace KPlant.Sequence.Model
             {
                 output += $" {Command.ToString().ToLowerInvariant()}";
             }
-            if (Start.HasValue) output += $" {Start}";
+            if (Seed.HasValue) output += $" {Seed}";
             if (Increment.HasValue) output += $" {Increment}";
             if (!string.IsNullOrWhiteSpace(Format)) output += $" {Format.EnsureQuotes()}";
 

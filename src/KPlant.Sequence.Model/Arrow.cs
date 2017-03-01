@@ -8,6 +8,7 @@ namespace KPlant.Sequence.Model
     {
         // Simple statics
         public static Arrow Default => new Arrow();
+
         public static Arrow Dotted => new Arrow { Type = ArrowType.Dotted };
                 
         public ArrowType Type { get; set; } = ArrowType.Normal;

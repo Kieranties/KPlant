@@ -8,24 +8,37 @@ namespace KPlant.Sequence.Model
 {
     public class Ref : ISequenceElement
     {
+        public static Ref Over(string label, params Participant[] participants) => new Ref(label, participants);
+        
         // multi-line wrapped statements currently not supported
 
-        public List<Participant> Over { get; set; } = new List<Participant>();
+        public Ref(string label, params Participant[] participants)
+        {
+            if (string.IsNullOrWhiteSpace(label))
+                throw new ArgumentOutOfRangeException(nameof(label));
 
-        public string Label { get; set; } = null;
+            Label = label;
+            Participants = new List<Participant>(participants);
+        }
+
+        public List<Participant> Participants { get; }
+
+        public string Label { get; }
 
         public async Task Render(IRenderer renderer)
         {
             if (renderer == null)
                 throw new ArgumentNullException(nameof(renderer));
 
-            if (Over == null || Over.Count == 0)
-                throw new MissingRenderingDataException(nameof(Over), typeof(Ref));
+            if(string.IsNullOrWhiteSpace(Label))
+                throw new MissingRenderingDataException(nameof(Label), typeof(Ref));
+
+            if (Participants == null || Participants.Count == 0)
+                throw new MissingRenderingDataException(nameof(Participants), typeof(Ref));
 
             var output = "ref over ";
-            output += string.Join(", ", Over.Select(x => x.Id));
-            if (!string.IsNullOrWhiteSpace(Label))
-                output += $" : {Label.FixNewlinesForOutput()}";
+            output += string.Join(", ", Participants.Select(x => x.Id));
+            output += $" : {Label.FixNewlinesForOutput()}";
 
             await renderer.WriteLineAsync(output);
         }

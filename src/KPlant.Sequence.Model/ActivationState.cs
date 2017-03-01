@@ -4,21 +4,23 @@ using KPlant.Rendering;
 
 namespace KPlant.Sequence.Model
 {
-    public class ActivationStatus : ISequenceElement
+    public partial class ActivationStatus : ISequenceElement
     {
-        public Participant Participant { get; set; }
+        public ActivationStatus(Participant participant, ActivationState state)
+        {
+            Participant = participant ?? throw new ArgumentNullException(nameof(participant));
+            State = state;
+        }
 
-        public ActivationState State { get; set; } = ActivationState.Activate;
+        public Participant Participant { get; }
+
+        public ActivationState State { get; }
 
         public async Task Render(IRenderer renderer)
         {
-
             if (renderer == null)
                 throw new ArgumentNullException(nameof(renderer));
-
-            if (Participant == null)
-                throw new MissingRenderingDataException(nameof(Participant), typeof(ActivationStatus));
-
+            
             var output = $"{State.ToString().ToLowerInvariant()} {Participant.Id}";
             await renderer.WriteLineAsync(output);
         }

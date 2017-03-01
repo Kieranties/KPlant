@@ -7,13 +7,19 @@ using System.Collections;
 
 namespace KPlant.Sequence.Model
 {
-    public class Group : ISequenceElement, IElementCollection<ISequenceElement>
+    public partial class Group : ISequenceElement, IElementCollection<ISequenceElement>, IEditableLabel
     {
+        public Group(GroupType type, string label = null)
+        {
+            Type = type;
+            Label = label;
+        }
+
         public List<ISequenceElement> Elements { get; set; } = new List<ISequenceElement>();
 
         public string Label { get; set; } = null;
 
-        public GroupType Type { get; set; } = GroupType.Group;
+        public GroupType Type { get; }
 
         public List<Group> Else { get; set; } = new List<Group>();
 
@@ -56,5 +62,5 @@ namespace KPlant.Sequence.Model
         Break,
         Critical,
         Group
-    }
+    }    
 }

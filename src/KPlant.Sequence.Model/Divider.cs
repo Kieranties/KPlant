@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
 using KPlant.Rendering;
+using KPlant.Model;
 
 namespace KPlant.Sequence.Model
 {
-    public class Divider : ISequenceElement
+    public partial class Divider : ISequenceElement, IEditableLabel
     {
+        public Divider(string label = null)
+        {
+            Label = label;
+        }
+
         public string Label { get; set; } = null;
 
         public async Task Render(IRenderer renderer)

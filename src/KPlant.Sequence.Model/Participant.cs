@@ -4,11 +4,21 @@ using KPlant.Rendering;
 
 namespace KPlant.Sequence.Model
 {
-    public class Participant : ISequenceElement
+    public partial class Participant : ISequenceElement
     {
-        public string Id { get; set; } = null;
+        public Participant(ParticipantType type, string id, string label = null)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentNullException(nameof(id), "Cannot be null or whitespace");
 
-        public ParticipantType Type { get; set; } = ParticipantType.Participant;
+            Type = type;
+            Id = id;
+            Label = label;
+        }
+
+        public string Id { get; }
+
+        public ParticipantType Type { get; }
 
         public string Label { get; set; } = null;
 
@@ -18,10 +28,7 @@ namespace KPlant.Sequence.Model
         {
             if (renderer == null)
                 throw new ArgumentNullException(nameof(renderer));
-
-            if (string.IsNullOrWhiteSpace(Id))
-                throw new MissingRenderingDataException(nameof(Id), GetType());
-
+            
             var output = Type.ToString().ToLowerInvariant();
             if (!string.IsNullOrWhiteSpace(Label))
             {                
