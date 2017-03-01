@@ -1,17 +1,17 @@
-﻿using KPlant.Rendering;
+﻿using KPlant.Model;
+using KPlant.Rendering;
 
 namespace KPlant.Sequence.Model
 {
-    public class Arrow : IStringRenderable
+    public partial class Arrow : ISupportColour
     {
-        // Simple statics
-        public static Arrow Default => new Arrow();
-
-        public static Arrow Dotted => new Arrow { Type = ArrowType.Dotted };
-
         public string Colour { get; set; } = null;
 
+        public ArrowHead FromHead { get; set; } = null;
+
         public ArrowHead Head { get; set; } = new ArrowHead();
+
+        public ArrowThickness Thickness { get; set; } = ArrowThickness.Normal;
 
         public ArrowType Type { get; set; } = ArrowType.Normal;
 
@@ -27,16 +27,26 @@ namespace KPlant.Sequence.Model
                 output += $"[#{Colour}]";
             }
 
-            // Line type
             if (Type == ArrowType.Dotted)
             {
                 output += "-";
             }
 
-            output += Head.Render();
+            output += Head.Render(Thickness);
+
+            if (FromHead != null)
+            {
+                output = FromHead.Render(Thickness, true) + output;
+            }
 
             return output;
         }
+    }
+
+    public enum ArrowThickness
+    {
+        Normal,
+        Thin
     }
 
     public enum ArrowType

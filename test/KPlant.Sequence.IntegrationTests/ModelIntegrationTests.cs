@@ -24,9 +24,9 @@ namespace KPlant.Sequence.IntegrationTests
                 new ActivationStatus(b, ActivationState.Activate),
                 new Message(b, c, "DoWork"),
                 new ActivationStatus(c, ActivationState.Activate),
-                new Message(c, b, "WorkDone") { Arrow = Arrow.Dotted },
+                new Message(c, b, "WorkDone") { Arrow = new Arrow { Type = ArrowType.Dotted } },
                 new ActivationStatus(c, ActivationState.Destroy),
-                new Message(b, a, "RequestCreated") { Arrow = Arrow.Dotted },
+                new Message(b, a, "RequestCreated") { Arrow = new Arrow { Type = ArrowType.Dotted } },
                 new ActivationStatus(b, ActivationState.Deactivate),
                 new Message(a, user, "Done"),
                 new ActivationStatus(a, ActivationState.Deactivate)
@@ -52,12 +52,16 @@ namespace KPlant.Sequence.IntegrationTests
             return new SequenceDiagram {
                 new Message(bob, alice) { Arrow = new Arrow { Head = new ArrowHead { Status = ArrowHeadStatus.Fail } } },
                 new Message(bob, alice),
-                new Message(bob, alice) { Arrow = new Arrow { Head = new ArrowHead { Thickness = ArrowHeadThickness.Thin } } },
+                new Message(bob, alice) { Arrow = new Arrow { Thickness = ArrowThickness.Thin } },
                 new Message(bob, alice) { Arrow = new Arrow { Head = new ArrowHead { Parts = ArrowHeadParts.Top } } },
-                new Message(bob, alice) { Arrow = new Arrow { Head = new ArrowHead { Parts = ArrowHeadParts.Top, Thickness = ArrowHeadThickness.Thin } } },
-                new Message(bob, alice) { Arrow = new Arrow { Type = ArrowType.Dotted, Head = new ArrowHead { Parts = ArrowHeadParts.Bottom, Thickness = ArrowHeadThickness.Thin } } },
+                new Message(bob, alice) { Arrow = new Arrow { Thickness = ArrowThickness.Thin, Head = new ArrowHead { Parts = ArrowHeadParts.Top } } },
+                new Message(bob, alice) { Arrow = new Arrow { Type = ArrowType.Dotted, Thickness = ArrowThickness.Thin, Head = new ArrowHead { Parts = ArrowHeadParts.Bottom } } },
                 new Message(bob, alice) { Arrow = new Arrow { Head = new ArrowHead { Status = ArrowHeadStatus.Success } } },
-                new Message(bob, alice) { Arrow = new Arrow { Type = ArrowType.Dotted, Head = new ArrowHead { Parts = ArrowHeadParts.Top, Thickness = ArrowHeadThickness.Thin, Status = ArrowHeadStatus.Success } } }
+                new Message(bob, alice) { Arrow = new Arrow { Type = ArrowType.Dotted, Thickness = ArrowThickness.Thin, Head = new ArrowHead { Parts = ArrowHeadParts.Top, Status = ArrowHeadStatus.Success } } },
+                new Message(bob, alice).Arrow(new Arrow { FromHead = new ArrowHead() }),
+                new Message(bob, alice) { Arrow = new Arrow { Head = new ArrowHead { Status = ArrowHeadStatus.Success }, FromHead = new ArrowHead() } },
+                new Message(bob, alice) { Arrow = new Arrow { Thickness = ArrowThickness.Thin, Head = new ArrowHead { Status = ArrowHeadStatus.Success, Parts = ArrowHeadParts.Top }, FromHead = new ArrowHead() } },
+                new Message(bob, alice) { Arrow = new Arrow { Type = ArrowType.Dotted, Head = new ArrowHead { Status = ArrowHeadStatus.Success }, FromHead = new ArrowHead { Status = ArrowHeadStatus.Success } } }
             };
         }
 
@@ -69,9 +73,9 @@ namespace KPlant.Sequence.IntegrationTests
             return new SequenceDiagram
             {
                 new Message(alice, bob, "Authentication Request"),
-                new Message(bob, alice, "Authentication Response") { Arrow = Arrow.Dotted },
+                new Message(bob, alice, "Authentication Response") { Arrow = new Arrow { Type = ArrowType.Dotted } },
                 new Message(alice, bob, "Another authentication Request"),
-                new Message(bob, alice, "Another authentication Response") { Arrow = Arrow.Dotted }
+                new Message(bob, alice, "Another authentication Response") { Arrow = new Arrow { Type = ArrowType.Dotted } }
             };
         }
 
@@ -114,9 +118,9 @@ namespace KPlant.Sequence.IntegrationTests
             return new SequenceDiagram {
                 new Message(alice, bob, "Authentication Request"),
                 new Delay(),
-                new Message(bob, alice, "Authentication Response") { Arrow = Arrow.Dotted },
+                new Message(bob, alice, "Authentication Response") { Arrow = new Arrow { Type = ArrowType.Dotted } },
                 new Delay("5 minutes later"),
-                new Message(bob, alice, "Bye !") { Arrow = Arrow.Dotted }
+                new Message(bob, alice, "Bye !") { Arrow = new Arrow { Type = ArrowType.Dotted } }
             };
         }
 
@@ -128,10 +132,10 @@ namespace KPlant.Sequence.IntegrationTests
             return new SequenceDiagram {
                 new Divider("Initialization"),
                 new Message(alice, bob, "Authentication Request"),
-                new Message(bob, alice, "Authentication Response") { Arrow = Arrow.Dotted },
+                new Message(bob, alice, "Authentication Response") { Arrow = new Arrow { Type = ArrowType.Dotted } },
                 new Divider("Repetition"),
                 new Message(alice, bob, "Another authentication Request"),
-                new Message(bob, alice, "Another authentication Response") { Arrow = Arrow.Dotted }
+                new Message(bob, alice, "Another authentication Response") { Arrow = new Arrow { Type = ArrowType.Dotted } }
             };
         }
 
@@ -282,13 +286,13 @@ namespace KPlant.Sequence.IntegrationTests
 
             return new SequenceDiagram {
                 new Message(alice, bob, "message 1"),
-                new Message(bob, alice, "ok") { Arrow = Arrow.Dotted },
+                new Message(bob, alice, "ok") { Arrow = new Arrow { Type = ArrowType.Dotted } },
                 new Space(),
                 new Message(alice, bob, "message 2"),
-                new Message(bob, alice, "ok") { Arrow = Arrow.Dotted },
+                new Message(bob, alice, "ok") { Arrow = new Arrow { Type = ArrowType.Dotted } },
                 new Space(45),
                 new Message(alice, bob, "message 3"),
-                new Message(bob, alice, "ok") { Arrow = Arrow.Dotted }
+                new Message(bob, alice, "ok") { Arrow = new Arrow { Type = ArrowType.Dotted } }
             };
         }
 

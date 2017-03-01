@@ -1,10 +1,11 @@
-﻿using KPlant.Rendering;
+﻿using KPlant.Model;
+using KPlant.Rendering;
 using System;
 using System.Threading.Tasks;
 
 namespace KPlant.Sequence.Model
 {
-    public partial class Participant : ISequenceElement
+    public partial class Participant : ISequenceElement, ISupportColour
     {
         public Participant(string id, string label = null, ParticipantType type = ParticipantType.Participant)
         {

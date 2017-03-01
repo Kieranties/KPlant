@@ -1,6 +1,6 @@
 ﻿namespace KPlant.Model
 {
-    public interface IEditableLabel
+    public interface ISupportLabel
     {
         string Label { get; set; }
     }

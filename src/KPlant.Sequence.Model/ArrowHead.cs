@@ -1,51 +1,53 @@
-﻿using KPlant.Rendering;
+﻿using System;
 
 namespace KPlant.Sequence.Model
 {
-    public class ArrowHead : IStringRenderable
+    public class ArrowHead
     {
         public ArrowHeadParts Parts { get; set; } = ArrowHeadParts.Normal;
 
         public ArrowHeadStatus Status { get; set; } = ArrowHeadStatus.Normal;
 
-        public ArrowHeadThickness Thickness { get; set; } = ArrowHeadThickness.Normal;
-
-        public string Render()
+        public string Render(ArrowThickness thickness, bool invert = false)
         {
-            string headSymbol = null;
+            var output = string.Empty;
+            string[] topParts = invert ? new[] { "/", @"\", "<" } : new[] { @"\", "/", ">" };
             switch (Parts)
             {
                 case ArrowHeadParts.Top:
-                    headSymbol = @"\";
+                    output = topParts[0];
                     break;
 
                 case ArrowHeadParts.Bottom:
-                    headSymbol = "/";
+                    output = topParts[1];
                     break;
 
                 case ArrowHeadParts.Normal:
-                    headSymbol = ">";
+                    output = topParts[2];
                     break;
             }
 
-            if (Thickness == ArrowHeadThickness.Thin)
-                headSymbol += headSymbol;
+            if (thickness == ArrowThickness.Thin)
+                output += output;
 
+            var statusString = string.Empty;
             switch (Status)
             {
                 case ArrowHeadStatus.Success:
-                    headSymbol += "o";
+                    statusString = "o";
                     break;
 
                 case ArrowHeadStatus.Fail:
-                    headSymbol += "x";
+                    statusString = "x";
                     break;
 
                 case ArrowHeadStatus.Normal:
                     break;
             }
 
-            return headSymbol;
+            output = invert ? statusString + output : output + statusString;
+
+            return output;
         }
     }
 
@@ -61,11 +63,5 @@ namespace KPlant.Sequence.Model
         Normal,
         Success,
         Fail
-    }
-
-    public enum ArrowHeadThickness
-    {
-        Normal,
-        Thin
     }
 }

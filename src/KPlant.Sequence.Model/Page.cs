@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace KPlant.Sequence.Model
 {
-    public class Page : ISequenceElement, IEditableLabel
+    public class Page : ISequenceElement, ISupportLabel
     {
         public Page(string label = null)
         {

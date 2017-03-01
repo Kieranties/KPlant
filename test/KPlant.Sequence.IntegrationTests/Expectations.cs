@@ -36,6 +36,10 @@ Bob -\\ Alice
 Bob --// Alice
 Bob ->o Alice
 Bob --\\o Alice
+Bob <-> Alice
+Bob <->o Alice
+Bob <<-\\o Alice
+Bob o<-->o Alice
 @enduml
 ";
 

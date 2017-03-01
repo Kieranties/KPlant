@@ -1,9 +1,9 @@
 ﻿namespace KPlant.Model
 {
-    public static class EditableLabelExtensions
+    public static class SupportLabelExtensions
     {
         public static T Label<T>(this T instance, string label)
-            where T : IEditableLabel
+            where T : ISupportLabel
         {
             instance.Label = label;
             return instance;

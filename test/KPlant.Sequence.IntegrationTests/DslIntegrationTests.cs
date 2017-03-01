@@ -25,9 +25,9 @@ namespace KPlant.Sequence.IntegrationTests
                 ActivationStatus.Activate(b),
                 Message.Between(b, c, "DoWork"),
                 ActivationStatus.Activate(c),
-                Message.Between(c, b, "WorkDone").Arrow(Arrow.Dotted),
+                Message.Between(c, b, "WorkDone").Arrow(Arrow.Dotted()),
                 ActivationStatus.Destroy(c),
-                Message.Between(b, a, "RequestCreated").Arrow(Arrow.Dotted),
+                Message.Between(b, a, "RequestCreated").Arrow(Arrow.Dotted()),
                 ActivationStatus.Deactivate(b),
                 Message.Between(a, user, "Done"),
                 ActivationStatus.Deactivate(a)
@@ -40,8 +40,8 @@ namespace KPlant.Sequence.IntegrationTests
             var bob = Participant.Called("Bob");
 
             return SequenceDiagram.Of(
-                Message.Between(bob, alice, "hello").Arrow(new Arrow { Colour = "red" }),
-                Message.Between(alice, bob, "ok").Arrow(new Arrow { Colour = "0000FF", Type = ArrowType.Dotted })
+                Message.Between(bob, alice, "hello").Arrow(Arrow.Default().Colour("red")),
+                Message.Between(alice, bob, "ok").Arrow(Arrow.Dotted().Colour("0000FF"))
             );
         }
 
@@ -53,12 +53,16 @@ namespace KPlant.Sequence.IntegrationTests
             return SequenceDiagram.Of(
                 Message.Between(bob, alice).Arrow(new Arrow { Head = new ArrowHead { Status = ArrowHeadStatus.Fail } }),
                 Message.Between(bob, alice),
-                Message.Between(bob, alice).Arrow(new Arrow { Head = new ArrowHead { Thickness = ArrowHeadThickness.Thin } }),
+                Message.Between(bob, alice).Arrow(new Arrow { Thickness = ArrowThickness.Thin }),
                 Message.Between(bob, alice).Arrow(new Arrow { Head = new ArrowHead { Parts = ArrowHeadParts.Top } }),
-                Message.Between(bob, alice).Arrow(new Arrow { Head = new ArrowHead { Parts = ArrowHeadParts.Top, Thickness = ArrowHeadThickness.Thin } }),
-                Message.Between(bob, alice).Arrow(new Arrow { Type = ArrowType.Dotted, Head = new ArrowHead { Parts = ArrowHeadParts.Bottom, Thickness = ArrowHeadThickness.Thin } }),
+                Message.Between(bob, alice).Arrow(new Arrow { Thickness = ArrowThickness.Thin, Head = new ArrowHead { Parts = ArrowHeadParts.Top } }),
+                Message.Between(bob, alice).Arrow(new Arrow { Type = ArrowType.Dotted, Thickness = ArrowThickness.Thin, Head = new ArrowHead { Parts = ArrowHeadParts.Bottom } }),
                 Message.Between(bob, alice).Arrow(new Arrow { Head = new ArrowHead { Status = ArrowHeadStatus.Success } }),
-                Message.Between(bob, alice).Arrow(new Arrow { Type = ArrowType.Dotted, Head = new ArrowHead { Parts = ArrowHeadParts.Top, Thickness = ArrowHeadThickness.Thin, Status = ArrowHeadStatus.Success } })
+                Message.Between(bob, alice).Arrow(new Arrow { Type = ArrowType.Dotted, Thickness = ArrowThickness.Thin, Head = new ArrowHead { Parts = ArrowHeadParts.Top, Status = ArrowHeadStatus.Success } }),
+                Message.Between(bob, alice).Arrow(new Arrow { FromHead = new ArrowHead() }),
+                Message.Between(bob, alice).Arrow(new Arrow { Head = new ArrowHead { Status = ArrowHeadStatus.Success }, FromHead = new ArrowHead() }),
+                Message.Between(bob, alice).Arrow(new Arrow { Thickness = ArrowThickness.Thin, Head = new ArrowHead { Status = ArrowHeadStatus.Success, Parts = ArrowHeadParts.Top }, FromHead = new ArrowHead() }),
+                Message.Between(bob, alice).Arrow(new Arrow { Type = ArrowType.Dotted, Head = new ArrowHead { Status = ArrowHeadStatus.Success }, FromHead = new ArrowHead { Status = ArrowHeadStatus.Success } })
             );
         }
 
@@ -69,9 +73,9 @@ namespace KPlant.Sequence.IntegrationTests
 
             return SequenceDiagram.Of(
                 Message.Between(alice, bob, "Authentication Request"),
-                Message.Between(bob, alice, "Authentication Response").Arrow(Arrow.Dotted),
+                Message.Between(bob, alice, "Authentication Response").Arrow(Arrow.Dotted()),
                 Message.Between(alice, bob, "Another authentication Request"),
-                Message.Between(bob, alice, "Another authentication Response").Arrow(Arrow.Dotted)
+                Message.Between(bob, alice, "Another authentication Response").Arrow(Arrow.Dotted())
             );
         }
 
@@ -114,9 +118,9 @@ namespace KPlant.Sequence.IntegrationTests
             return SequenceDiagram.Of(
                 Message.Between(alice, bob, "Authentication Request"),
                 Separator.Delay(),
-                Message.Between(bob, alice, "Authentication Response").Arrow(Arrow.Dotted),
+                Message.Between(bob, alice, "Authentication Response").Arrow(Arrow.Dotted()),
                 Separator.Delay("5 minutes later"),
-                Message.Between(bob, alice, "Bye !").Arrow(Arrow.Dotted)
+                Message.Between(bob, alice, "Bye !").Arrow(Arrow.Dotted())
             );
         }
 
@@ -128,10 +132,10 @@ namespace KPlant.Sequence.IntegrationTests
             return SequenceDiagram.Of(
                 Separator.Divider("Initialization"),
                 Message.Between(alice, bob, "Authentication Request"),
-                Message.Between(bob, alice, "Authentication Response").Arrow(Arrow.Dotted),
+                Message.Between(bob, alice, "Authentication Response").Arrow(Arrow.Dotted()),
                 Separator.Divider("Repetition"),
                 Message.Between(alice, bob, "Another authentication Request"),
-                Message.Between(bob, alice, "Another authentication Response").Arrow(Arrow.Dotted)
+                Message.Between(bob, alice, "Another authentication Response").Arrow(Arrow.Dotted())
             );
         }
 
@@ -272,13 +276,13 @@ namespace KPlant.Sequence.IntegrationTests
 
             return SequenceDiagram.Of(
                 Message.Between(alice, bob, "message 1"),
-                Message.Between(bob, alice, "ok").Arrow(Arrow.Dotted),
+                Message.Between(bob, alice, "ok").Arrow(Arrow.Dotted()),
                 Separator.Space(),
                 Message.Between(alice, bob, "message 2"),
-                Message.Between(bob, alice, "ok").Arrow(Arrow.Dotted),
+                Message.Between(bob, alice, "ok").Arrow(Arrow.Dotted()),
                 Separator.Space(45),
                 Message.Between(alice, bob, "message 3"),
-                Message.Between(bob, alice, "ok").Arrow(Arrow.Dotted)
+                Message.Between(bob, alice, "ok").Arrow(Arrow.Dotted())
             );
         }
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace KPlant.Sequence.Model
 {
-    public partial class Group : ISequenceElement, IElementCollection<ISequenceElement>, IEditableLabel
+    public partial class Group : ISequenceElement, IElementCollection<ISequenceElement>, ISupportLabel
     {
         public Group(GroupType type, string label = null)
         {

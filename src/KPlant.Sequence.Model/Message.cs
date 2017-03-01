@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace KPlant.Sequence.Model
 {
-    public partial class Message : ISequenceElement, IEditableLabel
+    public partial class Message : ISequenceElement, ISupportLabel
     {
         public Message(Participant from, Participant to, string label = null)
         {
@@ -14,7 +14,7 @@ namespace KPlant.Sequence.Model
             Label = label;
         }
 
-        public Arrow Arrow { get; set; } = Arrow.Default;
+        public Arrow Arrow { get; set; } = Arrow.Default();
 
         public Participant From { get; }
 

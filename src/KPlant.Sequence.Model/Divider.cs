@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace KPlant.Sequence.Model
 {
-    public partial class Divider : ISequenceElement, IEditableLabel
+    public partial class Divider : ISequenceElement, ISupportLabel
     {
         public Divider(string label = null)
         {

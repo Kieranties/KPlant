@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace KPlant.Sequence.Model
 {
-    public partial class Delay : ISequenceElement, IEditableLabel
+    public partial class Delay : ISequenceElement, ISupportLabel
     {
         public Delay(string label = null)
         {
