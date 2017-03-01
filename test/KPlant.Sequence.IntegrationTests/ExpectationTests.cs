@@ -19,16 +19,16 @@ namespace KPlant.Sequence.IntegrationTests
         [Fact]
         public async void Basic()
         {
-            
-            var alice = new Participant { Id = "Alice" };
-            var bob = new Participant { Id = "Bob" };
+
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob");
 
             var diagram = new SequenceDiagram
             {
-                new Message{ From = alice, To = bob, Label = "Authentication Request"},
-                new Message{ From = bob, To = alice, Label = "Authentication Response", Arrow = Arrow.Dotted},
-                new Message{ From = alice, To = bob, Label = "Another authentication Request"},
-                new Message{ From = bob, To = alice, Label = "Another authentication Response", Arrow = Arrow.Dotted},
+                new Message(alice, bob) { Label = "Authentication Request"},
+                new Message(bob, alice) { Label = "Authentication Response", Arrow = Arrow.Dotted},
+                new Message(alice, bob) {Label = "Another authentication Request"},
+                new Message(bob,alice) { Label = "Another authentication Response", Arrow = Arrow.Dotted},
             };
 
             await AssertDiagram(diagram, Expectations.Basic);
@@ -37,23 +37,19 @@ namespace KPlant.Sequence.IntegrationTests
         [Fact]
         public async void DeclaringParticipant()
         {
-            var p1 = new Participant { Id = "Foo1", Type = ParticipantType.Actor };
-            var p2 = new Participant { Id = "Foo2", Type = ParticipantType.Boundary };
-            var p3 = new Participant { Id = "Foo3", Type = ParticipantType.Control };
-            var p4 = new Participant { Id = "Foo4", Type = ParticipantType.Entity };
-            var p5 = new Participant { Id = "Foo5", Type = ParticipantType.Database };
+            var p1 = Participant.Actor("Foo1");
+            var p2 = Participant.Boundary("Foo2");
+            var p3 = Participant.Control("Foo3");
+            var p4 = Participant.Entity("Foo4");
+            var p5 = Participant.Database("Foo5");
 
             var diagram = new SequenceDiagram
             {
-                new Participant{ Id = "Foo1", Type = ParticipantType.Actor },
-                new Participant{ Id = "Foo2", Type = ParticipantType.Boundary },
-                new Participant{ Id = "Foo3", Type = ParticipantType.Control },
-                new Participant{ Id = "Foo4", Type = ParticipantType.Entity },
-                new Participant{ Id = "Foo5", Type = ParticipantType.Database },
-                new Message{ From = p1, To = p2, Label = "To boundary"},
-                new Message{ From = p1, To = p3, Label = "To control"},
-                new Message{ From = p1, To = p4, Label = "To entity"},
-                new Message{ From = p1, To = p5, Label = "To database"},
+                p1,p2,p3,p4,p5,
+                new Message(p1, p2){ Label = "To boundary"},
+                new Message(p1, p3){ Label = "To control"},
+                new Message(p1, p4){ Label = "To entity"},
+                new Message(p1, p5){ Label = "To database"},
             };
 
             await AssertDiagram(diagram, Expectations.DeclaringParticipant);
@@ -62,16 +58,16 @@ namespace KPlant.Sequence.IntegrationTests
         [Fact]
         public async void ColourAndAliasing()
         {
-            var bob = new Participant { Id = "Bob", Type = ParticipantType.Actor, Colour = "red" };
-            var alice = new Participant { Id = "Alice" };
-            var l = new Participant { Id = "L", Label = "I have a really\nlong name", Colour = "99FF99" };
+            var bob = Participant.Actor("Bob").WithColour("red");
+            var alice = Participant.Called("Alice");
+            var l = Participant.Called("L", "I have a really\nlong name").WithColour("99FF99");
 
             var diagram = new SequenceDiagram
             {
                 bob,alice,l,
-                new Message{ From = alice, To = bob, Label = "Authentication Request" },
-                new Message{ From = bob, To = alice, Label = "Authentication Response" },
-                new Message{ From = bob, To = l, Label = "Log transaction" }
+                new Message(alice,bob) { Label = "Authentication Request" },
+                new Message(bob,alice) { Label = "Authentication Response" },
+                new Message(bob, l) { Label = "Log transaction" }
             };
 
             await AssertDiagram(diagram, Expectations.ColourAndAliasing);
@@ -80,15 +76,15 @@ namespace KPlant.Sequence.IntegrationTests
         [Fact(Skip = "Lacking support late declaration of participants")]
         public async void NonLetterParticipants()
         {
-            var alice = new Participant { Id = "Alice" };
-            var bob = new Participant { Id = "Bob()" };
-            var @long = new Participant { Id = "Long", Label = "This is very\nlong" };
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob()");
+            var @long = Participant.Called("Long", "This is very\nlong");
 
             var diagram = new SequenceDiagram
             {
-                new Message{ From = alice, To = bob, Label = "Hello"},
-                new Message{ From = bob, To = @long },
-                new Message{ From = @long, To = bob, Label = "ok"},
+                new Message(alice, bob) { Label = "Hello" },
+                new Message(bob, @long),
+                new Message(@long, bob) { Label = "ok" },
             };
 
             await AssertDiagram(diagram, Expectations.NonLetterParticipants);
@@ -97,10 +93,10 @@ namespace KPlant.Sequence.IntegrationTests
         [Fact]
         public async void MessageToSelf()
         {
-            var alice = new Participant { Id = "Alice" };
+            var alice = Participant.Called("Alice");
             var diagram = new SequenceDiagram
             {
-                new Message { From = alice, To = alice, Label = "This is a signal to self.\nIt also demonstrates\nmultiline \ntext" }
+                new Message(alice, alice) { Label = "This is a signal to self.\nIt also demonstrates\nmultiline \ntext" }
             };
 
             await AssertDiagram(diagram, Expectations.MessageToSelf);
@@ -109,18 +105,18 @@ namespace KPlant.Sequence.IntegrationTests
         [Fact]
         public async void ArrowStyle()
         {
-            var alice = new Participant { Id = "Alice" };
-            var bob = new Participant { Id = "Bob" };
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob");
             var diagram = new SequenceDiagram
             {
-                new Message { From = bob, To = alice, Arrow = new Arrow{ Head = new ArrowHead{ Status = ArrowHeadStatus.Fail } } },
-                new Message { From = bob, To = alice },
-                new Message { From = bob, To = alice, Arrow = new Arrow{ Head = new ArrowHead{ Thickness = ArrowHeadThickness.Thin } } },
-                new Message { From = bob, To = alice, Arrow = new Arrow{ Head = new ArrowHead{ Parts = ArrowHeadParts.Top } } },
-                new Message { From = bob, To = alice, Arrow = new Arrow{ Head = new ArrowHead{ Parts = ArrowHeadParts.Top, Thickness = ArrowHeadThickness.Thin } } },
-                new Message { From = bob, To = alice, Arrow = new Arrow{ Type = ArrowType.Dotted, Head = new ArrowHead{ Parts = ArrowHeadParts.Bottom, Thickness = ArrowHeadThickness.Thin } } },
-                new Message { From = bob, To = alice, Arrow = new Arrow{ Head = new ArrowHead{ Status = ArrowHeadStatus.Success } } },
-                new Message { From = bob, To = alice, Arrow = new Arrow{ Type = ArrowType.Dotted, Head = new ArrowHead{ Parts = ArrowHeadParts.Top, Thickness = ArrowHeadThickness.Thin, Status = ArrowHeadStatus.Success } } },
+                new Message(bob, alice) { Arrow = new Arrow{ Head = new ArrowHead{ Status = ArrowHeadStatus.Fail } } },
+                new Message(bob, alice),
+                new Message(bob, alice) { Arrow = new Arrow{ Head = new ArrowHead{ Thickness = ArrowHeadThickness.Thin } } },
+                new Message(bob, alice) { Arrow = new Arrow{ Head = new ArrowHead{ Parts = ArrowHeadParts.Top } } },
+                new Message(bob, alice) { Arrow = new Arrow{ Head = new ArrowHead{ Parts = ArrowHeadParts.Top, Thickness = ArrowHeadThickness.Thin } } },
+                new Message(bob, alice) { Arrow = new Arrow{ Type = ArrowType.Dotted, Head = new ArrowHead{ Parts = ArrowHeadParts.Bottom, Thickness = ArrowHeadThickness.Thin } } },
+                new Message(bob, alice) { Arrow = new Arrow{ Head = new ArrowHead{ Status = ArrowHeadStatus.Success } } },
+                new Message(bob, alice) { Arrow = new Arrow{ Type = ArrowType.Dotted, Head = new ArrowHead{ Parts = ArrowHeadParts.Top, Thickness = ArrowHeadThickness.Thin, Status = ArrowHeadStatus.Success } } },
             };
 
             await AssertDiagram(diagram, Expectations.ArrowStyle);
@@ -129,13 +125,13 @@ namespace KPlant.Sequence.IntegrationTests
         [Fact]
         public async void ArrowColour()
         {
-            var alice = new Participant { Id = "Alice" };
-            var bob = new Participant { Id = "Bob" };
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob");
 
             var diagram = new SequenceDiagram
             {
-                new Message{From = bob, To = alice, Label = "hello", Arrow = new Arrow{ Colour = "red" } },
-                new Message{From = alice, To = bob, Label = "ok", Arrow = new Arrow{ Colour = "0000FF", Type = ArrowType.Dotted } },
+                new Message(bob, alice) { Label = "hello", Arrow = new Arrow{ Colour = "red" } },
+                new Message(alice, bob) { Label = "ok", Arrow = new Arrow{ Colour = "0000FF", Type = ArrowType.Dotted } },
             };
 
             await AssertDiagram(diagram, Expectations.ArrowColour);
@@ -145,14 +141,14 @@ namespace KPlant.Sequence.IntegrationTests
         public async void MessageSequenceNumbering()
         {
 
-            var bob = new Participant { Id = "Bob" };
-            var alice = new Participant { Id = "Alice" };
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob");
 
             var diagram = new SequenceDiagram
             {
-                new AutoNumber(),
-                new Message { From = bob, To = alice, Label = "Authentication Request" },
-                new Message { From = alice, To = bob, Label = "Authentication Response" },
+                AutoNumber.Start(),
+                new Message(bob, alice) { Label = "Authentication Request" },
+                new Message(alice, bob) { Label = "Authentication Response" },
             };
 
             await AssertDiagram(diagram, Expectations.MessageSequenceNumbering);
@@ -161,20 +157,20 @@ namespace KPlant.Sequence.IntegrationTests
         [Fact]
         public async void MessageSequenceNumberingIncrement()
         {
-            var bob = new Participant { Id = "Bob" };
-            var alice = new Participant { Id = "Alice" };
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob");
 
             var diagram = new SequenceDiagram
             {
-                new AutoNumber(),
-                new Message { From = bob, To = alice, Label = "Authentication Request" },
-                new Message { From = alice, To = bob, Label = "Authentication Response" },
-                new AutoNumber { Start = 15 },
-                new Message { From = bob, To = alice, Label = "Another authentication Request" },
-                new Message { From = alice, To = bob, Label = "Another authentication Response" },
-                new AutoNumber { Start = 40, Increment = 10 },
-                new Message { From = bob, To = alice, Label = "Yet another authentication Request" },
-                new Message { From = alice, To = bob, Label = "Yet another authentication Response" },
+                AutoNumber.Start(),
+                new Message(bob, alice) { Label = "Authentication Request" },
+                new Message(alice, bob) { Label = "Authentication Response" },
+                AutoNumber.Start(15),
+                new Message(bob, alice) { Label = "Another authentication Request" },
+                new Message(alice, bob) { Label = "Another authentication Response" },
+                AutoNumber.Start(40, 10),
+                new Message(bob, alice) { Label = "Yet another authentication Request" },
+                new Message(alice, bob) { Label = "Yet another authentication Response" },
             };
 
             await AssertDiagram(diagram, Expectations.MessageSequenceNumberingIncrement);
@@ -183,20 +179,20 @@ namespace KPlant.Sequence.IntegrationTests
         [Fact]
         public async void MessageSequenceNumberingFormat()
         {
-            var bob = new Participant { Id = "Bob" };
-            var alice = new Participant { Id = "Alice" };
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob");
 
             var diagram = new SequenceDiagram
             {
-                new AutoNumber { Format = "<b>[000]" },
-                new Message { From = bob, To = alice, Label = "Authentication Request" },
-                new Message { From = alice, To = bob, Label = "Authentication Response" },
-                new AutoNumber { Start = 15, Format = "<b>(<u>##</u>)" },
-                new Message { From = bob, To = alice, Label = "Another authentication Request" },
-                new Message { From = alice, To = bob, Label = "Another authentication Response" },
-                new AutoNumber { Start = 40, Increment = 10, Format = "<font color=red><b>Message 0  " },
-                new Message { From = bob, To = alice, Label = "Yet another authentication Request" },
-                new Message { From = alice, To = bob, Label = "Yet another authentication Response" },
+                AutoNumber.Start(format: "<b>[000]"),
+                new Message(bob, alice) { Label = "Authentication Request" },
+                new Message(alice, bob) { Label = "Authentication Response" },
+                AutoNumber.Start(15, format: "<b>(<u>##</u>)"),
+                new Message(bob, alice) { Label = "Another authentication Request" },
+                new Message(alice, bob) { Label = "Another authentication Response" },
+                AutoNumber.Start(40, 10, "<font color=red><b>Message 0  "),
+                new Message(bob, alice) { Label = "Yet another authentication Request" },
+                new Message (alice, bob) { Label = "Yet another authentication Response" },
             };
 
             await AssertDiagram(diagram, Expectations.MessageSequenceNumberingFormat);
@@ -205,24 +201,24 @@ namespace KPlant.Sequence.IntegrationTests
         [Fact]
         public async void MessageSequenceNumberingStopResume()
         {
-            var bob = new Participant { Id = "Bob" };
-            var alice = new Participant { Id = "Alice" };
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob");
 
             var diagram = new SequenceDiagram
             {
-                new AutoNumber { Format = "<b>[000]", Start = 10, Increment = 10 },
-                new Message { From = bob, To = alice, Label = "Authentication Request" },
-                new Message { From = alice, To = bob, Label = "Authentication Response" },
-                new AutoNumber { Command = AutoNumberCommand.Stop },
-                new Message { From = bob, To = alice, Label = "dummy"},
-                new AutoNumber { Format = "<font color=red><b>Message 0  ", Command = AutoNumberCommand.Resume },
-                new Message { From = bob, To = alice, Label = "Yet another authentication Request" },
-                new Message { From = alice, To = bob, Label = "Yet another authentication Response" },
-                new AutoNumber { Command = AutoNumberCommand.Stop },
-                new Message { From = bob, To = alice, Label = "dummy"},
-                new AutoNumber { Start = 1, Format = "<font color=blue><b>Message 0  ", Command = AutoNumberCommand.Resume },
-                new Message { From = bob, To = alice, Label = "Yet another authentication Request" },
-                new Message { From = alice, To = bob, Label = "Yet another authentication Response" },
+                AutoNumber.Start(10, 10, "<b>[000]"),
+                new Message(bob, alice) { Label = "Authentication Request" },
+                new Message(alice, bob) { Label = "Authentication Response" },
+                AutoNumber.Stop(),
+                new Message(bob, alice) { Label = "dummy"},
+                AutoNumber.Resume(format: "<font color=red><b>Message 0  "),
+                new Message(bob, alice) { Label = "Yet another authentication Request" },
+                new Message(alice, bob) { Label = "Yet another authentication Response" },
+                AutoNumber.Stop(),
+                new Message(bob, alice) { Label = "dummy"},
+                AutoNumber.Resume(1, "<font color=blue><b>Message 0  "),
+                new Message(bob, alice) { Label = "Yet another authentication Request" },
+                new Message(alice, bob) { Label = "Yet another authentication Response" },
             };
 
             await AssertDiagram(diagram, Expectations.MessageSequenceNumberingStopResume);
@@ -231,19 +227,19 @@ namespace KPlant.Sequence.IntegrationTests
         [Fact]
         public async void SplittingDiagrams()
         {
-            var bob = new Participant { Id = "Bob" };
-            var alice = new Participant { Id = "Alice" };
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob");
 
             var diagram = new SequenceDiagram
             {
-                new Message { From = alice, To = bob, Label = "message 1"},
-                new Message { From = alice, To = bob, Label = "message 2"},
+                new Message(alice, bob) { Label = "message 1"},
+                new Message (alice, bob) { Label = "message 2"},
                 new Page(),
-                new Message { From = alice, To = bob, Label = "message 3"},
-                new Message { From = alice, To = bob, Label = "message 4"},
-                new Page { Title = "A title for the\nlast page"},
-                new Message { From = alice, To = bob, Label = "message 5"},
-                new Message { From = alice, To = bob, Label = "message 6"},
+                new Message(alice, bob) { Label = "message 3"},
+                new Message(alice, bob) { Label = "message 4"},
+                new Page("A title for the\nlast page"),
+                new Message(alice, bob) { Label = "message 5"},
+                new Message(alice, bob) { Label = "message 6"},
             };
 
             await AssertDiagram(diagram, Expectations.SplittingDiagrams);
@@ -254,59 +250,27 @@ namespace KPlant.Sequence.IntegrationTests
         [InlineData("    ", Expectations.GroupingWithSpaces)]
         public async void Grouping(string indentMarker, string expectation)
         {
-            var bob = new Participant { Id = "Bob" };
-            var alice = new Participant { Id = "Alice" };
-            var log = new Participant { Id = "Log" };
-                       
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob");
+            var log = Participant.Called("Log");
+            
             var diagram = new SequenceDiagram
             {
-                new Message { From = alice, To = bob, Label = "Authentication Request" },
-                new Group
-                {
-                    Type = GroupType.Alt,
-                    Label = "successful case",
-                    Elements =
-                    {
-                        new Message { From = bob, To = alice, Label = "Authentication Accepted" }
-                    },
-                    Else =
-                    {
-                        new Group
-                        {
-                            Label = "some kind of failure",
-                            Elements =
-                            {
-                                new Message { From = bob, To = alice, Label = "Authentication Failure" },
-                                new Group
-                                {
-                                    Label = "My own label",
-                                    Elements =
-                                    {
-                                        new Message { From = alice, To = log, Label = "Log attack start"},
-                                        new Group
-                                        {
-                                            Type = GroupType.Loop,
-                                            Label = "1000 times",
-                                            Elements =
-                                            {
-                                                new Message { From = alice, To = bob, Label = "DNS Attack" }
-                                            }
-                                        },
-                                        new Message { From = alice, To = log, Label = "Log attack end"}
-                                    }
-                                }
-                            }
-                        },
-                        new Group
-                        {
-                            Label = "Another type of failure",
-                            Elements =
-                            {
-                                new Message { From = bob, To = alice, Label = "Please repeat" }
-                            }
-                        }
-                    }
-                }
+                new Message(alice, bob) { Label = "Authentication Request" },
+                Group.Alt(new Message(bob, alice) { Label = "Authentication Accepted" }).WithLabel("successful case")
+                    .WithElse(
+                        Group.For(
+                            new Message(bob, alice) { Label = "Authentication Failure" },
+                            Group.For(
+                                new Message(alice, log) { Label = "Log attack start" },
+                                Group.Loop(new Message(alice, bob) { Label = "DNS Attack" })
+                                    .WithLabel("1000 times"),
+                                new Message(alice, log) { Label = "Log attack end" }
+                            ).WithLabel("My own label")
+                        ).WithLabel("some kind of failure"),
+                        Group.For(new Message(bob, alice) { Label = "Please repeat" })
+                            .WithLabel("Another type of failure")
+                )
             };
 
             await AssertDiagram(diagram, expectation, indentMarker);
@@ -315,34 +279,34 @@ namespace KPlant.Sequence.IntegrationTests
         [Fact]
         public async void Divider()
         {
-            var bob = new Participant { Id = "Bob" };
-            var alice = new Participant { Id = "Alice" };
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob");
 
             var diagram = new SequenceDiagram
             {
-                new Divider { Label = "Initialization" },
-                new Message { From = alice, To = bob, Label = "Authentication Request"},
-                new Message { From = bob, To = alice, Label = "Authentication Response", Arrow = Arrow.Dotted },
-                new Divider { Label = "Repetition" },
-                new Message { From = alice, To = bob, Label = "Another authentication Request"},
-                new Message { From = bob, To = alice, Label = "Another authentication Response", Arrow = Arrow.Dotted },
+                new Divider("Initialization"),
+                new Message(alice, bob) { Label = "Authentication Request"},
+                new Message(bob, alice) { Label = "Authentication Response", Arrow = Arrow.Dotted },
+                new Divider("Repetition"),
+                new Message(alice, bob) { Label = "Another authentication Request"},
+                new Message(bob, alice) { Label = "Another authentication Response", Arrow = Arrow.Dotted },
             };
 
             await AssertDiagram(diagram, Expectations.Divider);
         }
 
         [Fact]
-        public async void Ref()
+        public async void RefOver()
         {
-            var bob = new Participant { Id = "Bob", Type = ParticipantType.Actor };
-            var alice = new Participant { Id = "Alice" };
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Actor("Bob");
 
             var diagram = new SequenceDiagram
             {
                 alice,bob,
-                new Ref { Over = {alice,bob}, Label = "init"},
-                new Message { From = alice, To = bob, Label = "hello" },
-                new Ref { Over = { bob }, Label = "This can be on\nseveral lines" }
+                Ref.Over("init", alice, bob),
+                new Message(alice, bob) {  Label = "hello" },
+                Ref.Over("This can be on\nseveral lines", bob)
             };
 
             await AssertDiagram(diagram, Expectations.Ref);
@@ -351,16 +315,16 @@ namespace KPlant.Sequence.IntegrationTests
         [Fact]
         public async void Delay()
         {
-            var alice = new Participant { Id = "Alice" };
-            var bob = new Participant { Id = "Bob" };
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob");
 
             var diagram = new SequenceDiagram
             {
-                new Message { From = alice, To = bob, Label = "Authentication Request"},
+                new Message(alice, bob) { Label = "Authentication Request"},
                 new Delay(),
-                new Message { From = bob, To = alice, Label = "Authentication Response", Arrow = Arrow.Dotted},
-                new Delay { Label = "5 minutes later" },
-                new Message { From = bob, To = alice, Label = "Bye !", Arrow = Arrow.Dotted},
+                new Message(bob, alice) { Label = "Authentication Response", Arrow = Arrow.Dotted},
+                new Delay("5 minutes later"),
+                new Message(bob, alice) { Label = "Bye !", Arrow = Arrow.Dotted},
             };
 
             await AssertDiagram(diagram, Expectations.Delay);
@@ -369,19 +333,19 @@ namespace KPlant.Sequence.IntegrationTests
         [Fact]
         public async void Space()
         {
-            var alice = new Participant { Id = "Alice" };
-            var bob = new Participant { Id = "Bob" };
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob");
 
             var diagram = new SequenceDiagram
             {
-                new Message { From = alice, To = bob, Label = "message 1"},
-                new Message { From = bob, To = alice, Label = "ok", Arrow = Arrow.Dotted },
+                new Message(alice, bob) { Label = "message 1"},
+                new Message(bob, alice) { Label = "ok", Arrow = Arrow.Dotted },
                 new Space(),
-                new Message { From = alice, To = bob, Label = "message 2"},
-                new Message { From = bob, To = alice, Label = "ok", Arrow = Arrow.Dotted },
+                new Message(alice, bob) { Label = "message 2"},
+                new Message(bob, alice) { Label = "ok", Arrow = Arrow.Dotted },
                 new Space { Height = 45 },
-                new Message { From = alice, To = bob, Label = "message 3"},
-                new Message { From = bob, To = alice, Label = "ok", Arrow = Arrow.Dotted },
+                new Message(alice, bob) { Label = "message 3"},
+                new Message(bob, alice) { Label = "ok", Arrow = Arrow.Dotted },
             };
 
             await AssertDiagram(diagram, Expectations.Space);
@@ -390,27 +354,27 @@ namespace KPlant.Sequence.IntegrationTests
         [Fact]
         public async void Activation()
         {
-            var user = new Participant { Id = "User" };
-            var a = new Participant { Id = "A" };
-            var b = new Participant { Id = "B" };
-            var c = new Participant { Id = "C" };
-                       
+            var user = Participant.Called("User");
+            var a = Participant.Called("A");
+            var b = Participant.Called("B");
+            var c = Participant.Called("C");
+
 
             var diagram = new SequenceDiagram
             {
                 user,
-                new Message { From = user, To = a, Label = "DoWork"},
-                new ActivationStatus { Participant = a },
-                new Message { From = a, To = b, Label = "<< createRequest >>"},
-                new ActivationStatus { Participant = b },
-                new Message { From = b, To = c, Label = "DoWork"},
-                new ActivationStatus { Participant = c },
-                new Message { From = c, To = b, Label = "WorkDone", Arrow = Arrow.Dotted },
-                new ActivationStatus { Participant = c, State = ActivationState.Destroy },
-                new Message { From = b, To = a, Label = "RequestCreated", Arrow = Arrow.Dotted },
-                new ActivationStatus { Participant = b, State = ActivationState.Deactivate },
-                new Message { From = a, To = user, Label = "Done" },
-                new ActivationStatus { Participant = a, State = ActivationState.Deactivate },
+                new Message(user, a) { Label = "DoWork"},
+                ActivationStatus.Activate(a),
+                new Message(a, b) { Label = "<< createRequest >>"},
+                ActivationStatus.Activate(b),
+                new Message(b, c) { Label = "DoWork"},
+                ActivationStatus.Activate(c),
+                new Message(c, b) { Label = "WorkDone", Arrow = Arrow.Dotted },
+                ActivationStatus.Destroy(c),
+                new Message(b, a) { Label = "RequestCreated", Arrow = Arrow.Dotted },
+                ActivationStatus.Deactivate(b),
+                new Message(a, user) { Label = "Done" },
+                ActivationStatus.Deactivate(a),
             };
 
             await AssertDiagram(diagram, Expectations.Activation);
@@ -424,7 +388,7 @@ namespace KPlant.Sequence.IntegrationTests
             {
                 var options = new StreamRendererOptions { IndentMarker = indentMarker };
                 var renderer = new StreamRenderer(stream, options);
-                
+
                 await diagram.Render(renderer);
 
                 stream.Seek(0, SeekOrigin.Begin);

@@ -6,7 +6,18 @@ namespace KPlant.Sequence.Model
 {
     public class AutoNumber : ISequenceElement
     {
-        public int? Start { get; set; } = null;
+        private static AutoNumber Create(int? seed, int? increment, string format, AutoNumberCommand command)
+        {
+            return new AutoNumber { Seed = seed, Increment = increment, Format = format, Command = command };
+        }
+
+        // static resolvers
+        public static AutoNumber Start(int? seed = null, int? increment = null, string format = null) => Create(seed, increment, format, AutoNumberCommand.Start);
+        public static AutoNumber Stop() => Create(null, null, null, AutoNumberCommand.Stop);
+        public static AutoNumber Resume(int? increment = null, string format = null) => Create(null, increment, format, AutoNumberCommand.Resume);
+
+
+        public int? Seed { get; set; } = null;
 
         public int? Increment { get; set; } = null;
 
@@ -24,7 +35,7 @@ namespace KPlant.Sequence.Model
             {
                 output += $" {Command.ToString().ToLowerInvariant()}";
             }
-            if (Start.HasValue) output += $" {Start}";
+            if (Seed.HasValue) output += $" {Seed}";
             if (Increment.HasValue) output += $" {Increment}";
             if (!string.IsNullOrWhiteSpace(Format)) output += $" {Format.EnsureQuotes()}";
 

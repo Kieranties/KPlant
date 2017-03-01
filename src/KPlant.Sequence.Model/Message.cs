@@ -6,9 +6,15 @@ namespace KPlant.Sequence.Model
 {
     public class Message : ISequenceElement
     {
-        public Participant From { get; set; } = null;
+        public Message(Participant from, Participant to)
+        {
+            From = from ?? throw new ArgumentNullException(nameof(from));
+            To = to ?? throw new ArgumentNullException(nameof(to));
+        }
 
-        public Participant To { get; set; } = null;
+        public Participant From { get; }
+
+        public Participant To { get; }
 
         public string Label { get; set; } = null;
 
@@ -18,13 +24,7 @@ namespace KPlant.Sequence.Model
         {
             if (renderer == null)
                 throw new ArgumentNullException(nameof(renderer));
-
-            if (From == null)
-                throw new MissingRenderingDataException(nameof(From), typeof(Message));
-
-            if (To == null)
-                throw new MissingRenderingDataException(nameof(To), typeof(Message));
-
+            
             if (Arrow == null)
                 throw new MissingRenderingDataException(nameof(Arrow), typeof(Message));
 

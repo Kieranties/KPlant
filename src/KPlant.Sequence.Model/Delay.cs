@@ -6,6 +6,11 @@ namespace KPlant.Sequence.Model
 {
     public class Delay : ISequenceElement
     {
+        public Delay(string label = null)
+        {
+            Label = label;
+        }
+
         public string Label { get; set; } = null;
 
         public async Task Render(IRenderer renderer)

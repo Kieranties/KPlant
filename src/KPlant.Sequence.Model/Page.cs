@@ -6,6 +6,11 @@ namespace KPlant.Sequence.Model
 {
     public class Page : ISequenceElement
     {
+        public Page(string title = null)
+        {
+            Title = title;
+        }
+
         public string Title { get; set; } = null;
 
         public async Task Render(IRenderer renderer)
