@@ -2,7 +2,7 @@
 {
     public static class EditableLabelExtensions
     {
-        public static T Labelled<T>(this T instance, string label)
+        public static T Label<T>(this T instance, string label)
             where T: IEditableLabel
         {
             instance.Label = label;

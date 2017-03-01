@@ -2,7 +2,7 @@
 {
     public static class MessageExtensions
     {
-        public static Message WithArrow(this Message instance, Arrow arrow)
+        public static Message Arrow(this Message instance, Arrow arrow)
         {
             instance.Arrow = arrow;
             return instance;

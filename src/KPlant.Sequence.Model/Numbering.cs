@@ -6,28 +6,28 @@ namespace KPlant.Sequence.Model
 {
     public partial class Numbering : ISequenceElement
     {
-        public Numbering(AutoNumberCommand command, int? seed = null, int? increment = null)
+        public Numbering(NumberCommand command, int? seed = null, int? increment = null)
         {
             Seed = seed;
             Increment = increment;
             Command = command;
         }
-                
-        public int? Seed { get; }
 
-        public int? Increment { get; }
+        public NumberCommand Command { get; }
 
         public string Format { get; set; } = null;
 
-        public AutoNumberCommand Command { get; }
+        public int? Increment { get; }
+
+        public int? Seed { get; }
 
         public async Task Render(IRenderer renderer)
         {
             if (renderer == null)
                 throw new ArgumentNullException(nameof(renderer));
 
-            var output = "autonumber";            
-            if (Command != AutoNumberCommand.Start)
+            var output = "autonumber";
+            if (Command != NumberCommand.Start)
             {
                 output += $" {Command.ToString().ToLowerInvariant()}";
             }
@@ -39,7 +39,7 @@ namespace KPlant.Sequence.Model
         }
     }
 
-    public enum AutoNumberCommand
+    public enum NumberCommand
     {
         Start,
         Stop,

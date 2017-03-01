@@ -15,13 +15,17 @@ namespace KPlant.Sequence.Model
             Label = label;
         }
 
+        public Group(string label = null) : this(GroupType.Group, label)
+        {
+        }
+
         public List<ISequenceElement> Elements { get; set; } = new List<ISequenceElement>();
+
+        public List<Group> Else { get; set; } = new List<Group>();
 
         public string Label { get; set; } = null;
 
         public GroupType Type { get; }
-
-        public List<Group> Else { get; set; } = new List<Group>();
 
         public void Add(ISequenceElement element) => Elements.Add(element);
 
@@ -33,12 +37,14 @@ namespace KPlant.Sequence.Model
                 throw new ArgumentNullException(nameof(renderer));
 
             await WriteGroup(Type.ToString(), this, renderer);
-            
+
             await renderer.WriteLineAsync("end");
         }
 
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
         protected async Task WriteGroup(string type, Group group, IRenderer renderer)
-        {            
+        {
             var output = type.ToLowerInvariant();
             if (!string.IsNullOrWhiteSpace(group.Label))
                 output += $" {group.Label}";
@@ -47,10 +53,8 @@ namespace KPlant.Sequence.Model
             renderer.Indent();
             group.Elements.ForEach(async e => await e.Render(renderer));
             renderer.Outdent();
-            group.Else.ForEach(async e => await WriteGroup("else", e, renderer));           
+            group.Else.ForEach(async e => await WriteGroup("else", e, renderer));
         }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     public enum GroupType
@@ -62,5 +66,5 @@ namespace KPlant.Sequence.Model
         Break,
         Critical,
         Group
-    }    
+    }
 }

@@ -2,7 +2,7 @@
 {
     public static class ParticipantExtensions
     {
-        public static Participant WithColour(this Participant participant, string colour)
+        public static Participant Colour(this Participant participant, string colour)
         {
             participant.Colour = colour;
             return participant;

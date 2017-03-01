@@ -6,86 +6,31 @@ namespace KPlant.Sequence.IntegrationTests
 {
     public class DslIntegrationTests : IntegrationTests
     {
-        public DslIntegrationTests(ITestOutputHelper output) : base(output) {}
-
-        protected override SequenceDiagram BasicTest()
+        public DslIntegrationTests(ITestOutputHelper output) : base(output)
         {
-            var alice = Participant.Called("Alice");
-            var bob = Participant.Called("Bob");
-
-            return SequenceDiagram.Of(
-                Message.Between(alice, bob, "Authentication Request"),
-                Message.Between(bob, alice, "Authentication Response").WithArrow(Arrow.Dotted),
-                Message.Between(alice, bob, "Another authentication Request"),
-                Message.Between(bob, alice, "Another authentication Response").WithArrow(Arrow.Dotted)
-            );            
-        }
-        
-        protected override SequenceDiagram DeclaringParticipantTest()
-        {
-            var p1 = Participant.Actor("Foo1");
-            var p2 = Participant.Boundary("Foo2");
-            var p3 = Participant.Control("Foo3");
-            var p4 = Participant.Entity("Foo4");
-            var p5 = Participant.Database("Foo5");
-
-            return SequenceDiagram.Of(
-                p1,p2,p3,p4,p5,
-                Message.Between(p1, p2,"To boundary"),
-                Message.Between(p1, p3,"To control"),
-                Message.Between(p1, p4,"To entity"),
-                Message.Between(p1, p5,"To database")
-            );            
         }
 
-        protected override SequenceDiagram ColourAndAliasingTest()
+        protected override SequenceDiagram ActivationTest()
         {
-            var bob = Participant.Actor("Bob").WithColour("red");
-            var alice = Participant.Called("Alice");
-            var l = Participant.Called("L", "I have a really\nlong name").WithColour("99FF99");
-
-            return SequenceDiagram.Of(            
-                bob,alice,l,
-                Message.Between(alice,bob,"Authentication Request"),
-                Message.Between(bob,alice,"Authentication Response"),
-                Message.Between(bob, l,"Log transaction")
-            );
-        }
-
-        protected override SequenceDiagram NonLetterParticipantsTest()
-        {
-            var alice = Participant.Called("Alice");
-            var bob = Participant.Called("Bob()");
-            var @long = Participant.Called("Long", "This is very\nlong");
+            var user = Participant.Called("User");
+            var a = Participant.Called("A");
+            var b = Participant.Called("B");
+            var c = Participant.Called("C");
 
             return SequenceDiagram.Of(
-                Message.Between(alice, bob, "Hello"),
-                Message.Between(bob, @long),
-                Message.Between(@long, bob, "ok")
-            );
-        }
-
-        protected override SequenceDiagram MessageToSelfTest()
-        {
-            var alice = Participant.Called("Alice");
-            return SequenceDiagram.Of(
-                Message.Between(alice, alice, "This is a signal to self.\nIt also demonstrates\nmultiline \ntext")
-            );
-        }
-
-        protected override SequenceDiagram ArrowStyleTest()
-        {
-            var alice = Participant.Called("Alice");
-            var bob = Participant.Called("Bob");
-            return SequenceDiagram.Of(
-                Message.Between(bob, alice).WithArrow(new Arrow{ Head = new ArrowHead{ Status = ArrowHeadStatus.Fail } }),
-                Message.Between(bob, alice),
-                Message.Between(bob, alice).WithArrow(new Arrow{ Head = new ArrowHead{ Thickness = ArrowHeadThickness.Thin } }),
-                Message.Between(bob, alice).WithArrow(new Arrow{ Head = new ArrowHead{ Parts = ArrowHeadParts.Top } }),
-                Message.Between(bob, alice).WithArrow(new Arrow{ Head = new ArrowHead{ Parts = ArrowHeadParts.Top, Thickness = ArrowHeadThickness.Thin } }),
-                Message.Between(bob, alice).WithArrow(new Arrow{ Type = ArrowType.Dotted, Head = new ArrowHead{ Parts = ArrowHeadParts.Bottom, Thickness = ArrowHeadThickness.Thin } }),
-                Message.Between(bob, alice).WithArrow(new Arrow{ Head = new ArrowHead{ Status = ArrowHeadStatus.Success } }),
-                Message.Between(bob, alice).WithArrow(new Arrow{ Type = ArrowType.Dotted, Head = new ArrowHead{ Parts = ArrowHeadParts.Top, Thickness = ArrowHeadThickness.Thin, Status = ArrowHeadStatus.Success } })
+                user,
+                Message.Between(user, a, "DoWork"),
+                ActivationStatus.Activate(a),
+                Message.Between(a, b, "<< createRequest >>"),
+                ActivationStatus.Activate(b),
+                Message.Between(b, c, "DoWork"),
+                ActivationStatus.Activate(c),
+                Message.Between(c, b, "WorkDone").Arrow(Arrow.Dotted),
+                ActivationStatus.Destroy(c),
+                Message.Between(b, a, "RequestCreated").Arrow(Arrow.Dotted),
+                ActivationStatus.Deactivate(b),
+                Message.Between(a, user, "Done"),
+                ActivationStatus.Deactivate(a)
             );
         }
 
@@ -95,38 +40,123 @@ namespace KPlant.Sequence.IntegrationTests
             var bob = Participant.Called("Bob");
 
             return SequenceDiagram.Of(
-                Message.Between(bob, alice, "hello").WithArrow(new Arrow{ Colour = "red" }),
-                Message.Between(alice, bob, "ok").WithArrow(new Arrow{ Colour = "0000FF", Type = ArrowType.Dotted })
+                Message.Between(bob, alice, "hello").Arrow(new Arrow { Colour = "red" }),
+                Message.Between(alice, bob, "ok").Arrow(new Arrow { Colour = "0000FF", Type = ArrowType.Dotted })
             );
         }
 
-        protected override SequenceDiagram MessageSequenceNumberingTest()
+        protected override SequenceDiagram ArrowStyleTest()
         {
             var alice = Participant.Called("Alice");
             var bob = Participant.Called("Bob");
 
             return SequenceDiagram.Of(
-                Numbering.Start(),
-                Message.Between(bob, alice, "Authentication Request"),
-                Message.Between(alice, bob, "Authentication Response")
+                Message.Between(bob, alice).Arrow(new Arrow { Head = new ArrowHead { Status = ArrowHeadStatus.Fail } }),
+                Message.Between(bob, alice),
+                Message.Between(bob, alice).Arrow(new Arrow { Head = new ArrowHead { Thickness = ArrowHeadThickness.Thin } }),
+                Message.Between(bob, alice).Arrow(new Arrow { Head = new ArrowHead { Parts = ArrowHeadParts.Top } }),
+                Message.Between(bob, alice).Arrow(new Arrow { Head = new ArrowHead { Parts = ArrowHeadParts.Top, Thickness = ArrowHeadThickness.Thin } }),
+                Message.Between(bob, alice).Arrow(new Arrow { Type = ArrowType.Dotted, Head = new ArrowHead { Parts = ArrowHeadParts.Bottom, Thickness = ArrowHeadThickness.Thin } }),
+                Message.Between(bob, alice).Arrow(new Arrow { Head = new ArrowHead { Status = ArrowHeadStatus.Success } }),
+                Message.Between(bob, alice).Arrow(new Arrow { Type = ArrowType.Dotted, Head = new ArrowHead { Parts = ArrowHeadParts.Top, Thickness = ArrowHeadThickness.Thin, Status = ArrowHeadStatus.Success } })
             );
         }
 
-        protected override SequenceDiagram MessageSequenceNumberingIncrementTest()
+        protected override SequenceDiagram BasicTest()
         {
             var alice = Participant.Called("Alice");
             var bob = Participant.Called("Bob");
 
             return SequenceDiagram.Of(
-                Numbering.Start(),
-                Message.Between(bob, alice, "Authentication Request"),
-                Message.Between(alice, bob, "Authentication Response"),
-                Numbering.Start(15),      
-                Message.Between(bob, alice, "Another authentication Request"),
-                Message.Between(alice, bob, "Another authentication Response"),
-                Numbering.Start(40, 10),  
-                Message.Between(bob, alice, "Yet another authentication Request"),
-                Message.Between(alice, bob, "Yet another authentication Response")
+                Message.Between(alice, bob, "Authentication Request"),
+                Message.Between(bob, alice, "Authentication Response").Arrow(Arrow.Dotted),
+                Message.Between(alice, bob, "Another authentication Request"),
+                Message.Between(bob, alice, "Another authentication Response").Arrow(Arrow.Dotted)
+            );
+        }
+
+        protected override SequenceDiagram ColourAndAliasingTest()
+        {
+            var bob = Participant.Actor("Bob").Colour("red");
+            var alice = Participant.Called("Alice");
+            var l = Participant.Called("L", "I have a really\nlong name").Colour("99FF99");
+
+            return SequenceDiagram.Of(
+                bob, alice, l,
+                Message.Between(alice, bob, "Authentication Request"),
+                Message.Between(bob, alice, "Authentication Response"),
+                Message.Between(bob, l, "Log transaction")
+            );
+        }
+
+        protected override SequenceDiagram DeclaringParticipantTest()
+        {
+            var p1 = Participant.Actor("Foo1");
+            var p2 = Participant.Boundary("Foo2");
+            var p3 = Participant.Control("Foo3");
+            var p4 = Participant.Entity("Foo4");
+            var p5 = Participant.Database("Foo5");
+
+            return SequenceDiagram.Of(
+                p1, p2, p3, p4, p5,
+                Message.Between(p1, p2, "To boundary"),
+                Message.Between(p1, p3, "To control"),
+                Message.Between(p1, p4, "To entity"),
+                Message.Between(p1, p5, "To database")
+            );
+        }
+
+        protected override SequenceDiagram DelayTest()
+        {
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob");
+
+            return SequenceDiagram.Of(
+                Message.Between(alice, bob, "Authentication Request"),
+                Separator.Delay(),
+                Message.Between(bob, alice, "Authentication Response").Arrow(Arrow.Dotted),
+                Separator.Delay("5 minutes later"),
+                Message.Between(bob, alice, "Bye !").Arrow(Arrow.Dotted)
+            );
+        }
+
+        protected override SequenceDiagram DividerTest()
+        {
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob");
+
+            return SequenceDiagram.Of(
+                Separator.Divider("Initialization"),
+                Message.Between(alice, bob, "Authentication Request"),
+                Message.Between(bob, alice, "Authentication Response").Arrow(Arrow.Dotted),
+                Separator.Divider("Repetition"),
+                Message.Between(alice, bob, "Another authentication Request"),
+                Message.Between(bob, alice, "Another authentication Response").Arrow(Arrow.Dotted)
+            );
+        }
+
+        protected override SequenceDiagram GroupingTest()
+        {
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob");
+            var log = Participant.Called("Log");
+
+            return SequenceDiagram.Of(
+                Message.Between(alice, bob, "Authentication Request"),
+                Group.Alt(Message.Between(bob, alice, "Authentication Accepted")).Label("successful case")
+                    .Else(
+                        Group.Of(
+                            Message.Between(bob, alice, "Authentication Failure"),
+                            Group.Of(
+                                Message.Between(alice, log, "Log attack start"),
+                                Group.Loop(Message.Between(alice, bob, "DNS Attack"))
+                                    .Label("1000 times"),
+                                Message.Between(alice, log, "Log attack end")
+                            ).Label("My own label")
+                        ).Label("some kind of failure"),
+                        Group.Of(Message.Between(bob, alice, "Please repeat"))
+                            .Label("Another type of failure")
+                )
             );
         }
 
@@ -143,6 +173,24 @@ namespace KPlant.Sequence.IntegrationTests
                 Message.Between(bob, alice, "Another authentication Request"),
                 Message.Between(alice, bob, "Another authentication Response"),
                 Numbering.Start(40, 10).WithFormat("<font color=red><b>Message 0  "),
+                Message.Between(bob, alice, "Yet another authentication Request"),
+                Message.Between(alice, bob, "Yet another authentication Response")
+            );
+        }
+
+        protected override SequenceDiagram MessageSequenceNumberingIncrementTest()
+        {
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob");
+
+            return SequenceDiagram.Of(
+                Numbering.Start(),
+                Message.Between(bob, alice, "Authentication Request"),
+                Message.Between(alice, bob, "Authentication Response"),
+                Numbering.Start(15),
+                Message.Between(bob, alice, "Another authentication Request"),
+                Message.Between(alice, bob, "Another authentication Response"),
+                Numbering.Start(40, 10),
                 Message.Between(bob, alice, "Yet another authentication Request"),
                 Message.Between(alice, bob, "Yet another authentication Response")
             );
@@ -170,6 +218,70 @@ namespace KPlant.Sequence.IntegrationTests
             );
         }
 
+        protected override SequenceDiagram MessageSequenceNumberingTest()
+        {
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob");
+
+            return SequenceDiagram.Of(
+                Numbering.Start(),
+                Message.Between(bob, alice, "Authentication Request"),
+                Message.Between(alice, bob, "Authentication Response")
+            );
+        }
+
+        protected override SequenceDiagram MessageToSelfTest()
+        {
+            var alice = Participant.Called("Alice");
+
+            return SequenceDiagram.Of(
+                Message.Between(alice, alice, "This is a signal to self.\nIt also demonstrates\nmultiline \ntext")
+            );
+        }
+
+        protected override SequenceDiagram NonLetterParticipantsTest()
+        {
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob()");
+            var @long = Participant.Called("Long", "This is very\nlong");
+
+            return SequenceDiagram.Of(
+                Message.Between(alice, bob, "Hello"),
+                Message.Between(bob, @long),
+                Message.Between(@long, bob, "ok")
+            );
+        }
+
+        protected override SequenceDiagram RefBlockTest()
+        {
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Actor("Bob");
+
+            return SequenceDiagram.Of(
+                alice, bob,
+                Ref.Over("init", alice, bob),
+                Message.Between(alice, bob, "hello"),
+                Ref.Over("This can be on\nseveral lines", bob)
+            );
+        }
+
+        protected override SequenceDiagram SpaceTest()
+        {
+            var alice = Participant.Called("Alice");
+            var bob = Participant.Called("Bob");
+
+            return SequenceDiagram.Of(
+                Message.Between(alice, bob, "message 1"),
+                Message.Between(bob, alice, "ok").Arrow(Arrow.Dotted),
+                Separator.Space(),
+                Message.Between(alice, bob, "message 2"),
+                Message.Between(bob, alice, "ok").Arrow(Arrow.Dotted),
+                Separator.Space(45),
+                Message.Between(alice, bob, "message 3"),
+                Message.Between(bob, alice, "ok").Arrow(Arrow.Dotted)
+            );
+        }
+
         protected override SequenceDiagram SplittingDiagramsTest()
         {
             var alice = Participant.Called("Alice");
@@ -186,113 +298,5 @@ namespace KPlant.Sequence.IntegrationTests
                 Message.Between(alice, bob, "message 6")
             );
         }
-
-        protected override SequenceDiagram GroupingTest()
-        {
-            var alice = Participant.Called("Alice");
-            var bob = Participant.Called("Bob");
-            var log = Participant.Called("Log");
-
-            return SequenceDiagram.Of(
-                Message.Between(alice, bob, "Authentication Request"),
-                Group.Alt(new Message(bob, alice) { Label = "Authentication Accepted" }).Labelled("successful case")
-                    .Else(
-                        Group.Of(
-                            Message.Between(bob, alice, "Authentication Failure"),
-                            Group.Of(
-                                Message.Between(alice, log, "Log attack start"),
-                                Group.Loop(Message.Between(alice, bob, "DNS Attack"))
-                                    .Labelled("1000 times"),
-                                Message.Between(alice, log, "Log attack end")
-                            ).Labelled("My own label")
-                        ).Labelled("some kind of failure"),
-                        Group.Of(Message.Between(bob, alice, "Please repeat"))
-                            .Labelled("Another type of failure")
-                )
-            );
-        }
-
-        protected override SequenceDiagram DividerTest()
-        {
-            var alice = Participant.Called("Alice");
-            var bob = Participant.Called("Bob");
-
-            return SequenceDiagram.Of(
-                Separator.Divider("Initialization"),
-                Message.Between(alice, bob, "Authentication Request"),
-                Message.Between(bob, alice, "Authentication Response").WithArrow(Arrow.Dotted),
-                Separator.Divider("Repetition"),
-                Message.Between(alice, bob, "Another authentication Request"),
-                Message.Between(bob, alice, "Another authentication Response").WithArrow(Arrow.Dotted)
-            );
-        }
-
-        protected override SequenceDiagram RefBlockTest()
-        {
-            var alice = Participant.Called("Alice");
-            var bob = Participant.Actor("Bob");
-
-            return SequenceDiagram.Of(
-                alice,bob,
-                Ref.Over("init", alice, bob),
-                Message.Between(alice, bob, "hello"),
-                Ref.Over("This can be on\nseveral lines", bob)
-            );
-        }
-
-        protected override SequenceDiagram DelayTest()
-        {
-            var alice = Participant.Called("Alice");
-            var bob = Participant.Called("Bob");
-
-            return SequenceDiagram.Of(
-                Message.Between(alice, bob, "Authentication Request"),
-                Separator.Delay(),
-                Message.Between(bob, alice, "Authentication Response").WithArrow(Arrow.Dotted),
-                Separator.Delay("5 minutes later"),
-                Message.Between(bob, alice, "Bye !").WithArrow(Arrow.Dotted)
-            );
-        }
-
-        protected override SequenceDiagram SpaceTest()
-        {
-            var alice = Participant.Called("Alice");
-            var bob = Participant.Called("Bob");
-
-            return SequenceDiagram.Of(
-                Message.Between(alice, bob, "message 1"),
-                Message.Between(bob, alice, "ok").WithArrow(Arrow.Dotted),
-                Separator.Space(),
-                Message.Between(alice, bob, "message 2"),
-                Message.Between(bob, alice, "ok").WithArrow(Arrow.Dotted),
-                Separator.Space(45),
-                Message.Between(alice, bob, "message 3"),
-                Message.Between(bob, alice, "ok").WithArrow(Arrow.Dotted)
-            );            
-        }
-
-        protected override SequenceDiagram ActivationTest()
-        {
-            var user = Participant.Called("User");
-            var a = Participant.Called("A");
-            var b = Participant.Called("B");
-            var c = Participant.Called("C");
-
-            return SequenceDiagram.Of(
-                user,
-                Message.Between(user, a, "DoWork"),
-                ActivationStatus.Activate(a),
-                Message.Between(a, b, "<< createRequest >>"),
-                ActivationStatus.Activate(b),
-                Message.Between(b, c, "DoWork"),
-                ActivationStatus.Activate(c),
-                Message.Between(c, b, "WorkDone").WithArrow(Arrow.Dotted),
-                ActivationStatus.Destroy(c),
-                Message.Between(b, a, "RequestCreated").WithArrow(Arrow.Dotted),
-                ActivationStatus.Deactivate(b),
-                Message.Between(a, user, "Done"),
-                ActivationStatus.Deactivate(a)
-            );
-        }        
     }
 }
