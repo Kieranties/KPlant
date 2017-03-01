@@ -6,7 +6,12 @@ namespace KPlant.Sequence.Model
 {
     public class Space : ISequenceElement
     {
-        public int? Height { get; set; } = null;
+        public Space(int? height = null)
+        {
+            Height = height;
+        }
+
+        public int? Height { get; }
 
         public async Task Render(IRenderer renderer)
         {

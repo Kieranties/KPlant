@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using KPlant.Rendering;
+using KPlant.Model;
 
 namespace KPlant.Sequence.Model
 {
-    public class Delay : ISequenceElement
+    public partial class Delay : ISequenceElement, IEditableLabel
     {
         public Delay(string label = null)
         {

@@ -4,26 +4,22 @@ using KPlant.Rendering;
 
 namespace KPlant.Sequence.Model
 {
-    public class AutoNumber : ISequenceElement
+    public partial class Numbering : ISequenceElement
     {
-        private static AutoNumber Create(int? seed, int? increment, string format, AutoNumberCommand command)
+        public Numbering(AutoNumberCommand command, int? seed = null, int? increment = null)
         {
-            return new AutoNumber { Seed = seed, Increment = increment, Format = format, Command = command };
+            Seed = seed;
+            Increment = increment;
+            Command = command;
         }
+                
+        public int? Seed { get; }
 
-        // static resolvers
-        public static AutoNumber Start(int? seed = null, int? increment = null, string format = null) => Create(seed, increment, format, AutoNumberCommand.Start);
-        public static AutoNumber Stop() => Create(null, null, null, AutoNumberCommand.Stop);
-        public static AutoNumber Resume(int? increment = null, string format = null) => Create(null, increment, format, AutoNumberCommand.Resume);
-
-
-        public int? Seed { get; set; } = null;
-
-        public int? Increment { get; set; } = null;
+        public int? Increment { get; }
 
         public string Format { get; set; } = null;
 
-        public AutoNumberCommand Command { get; set; } = AutoNumberCommand.Start;
+        public AutoNumberCommand Command { get; }
 
         public async Task Render(IRenderer renderer)
         {

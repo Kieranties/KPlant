@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
 using KPlant.Rendering;
+using KPlant.Model;
 
 namespace KPlant.Sequence.Model
 {
-    public class Page : ISequenceElement
+    public class Page : ISequenceElement, IEditableLabel
     {
-        public Page(string title = null)
+        public Page(string label = null)
         {
-            Title = title;
+            Label = label;
         }
 
-        public string Title { get; set; } = null;
+        public string Label { get; set; } = null;
 
         public async Task Render(IRenderer renderer)
         {
@@ -19,8 +20,8 @@ namespace KPlant.Sequence.Model
                 throw new ArgumentNullException(nameof(renderer));
 
             var output = "newpage";
-            if (!string.IsNullOrWhiteSpace(Title))
-                output += $" {Title.FixNewlinesForOutput()}";
+            if (!string.IsNullOrWhiteSpace(Label))
+                output += $" {Label.FixNewlinesForOutput()}";
 
             await renderer.WriteLineAsync(output);
         }

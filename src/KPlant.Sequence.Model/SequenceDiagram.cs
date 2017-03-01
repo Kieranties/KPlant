@@ -7,7 +7,7 @@ using KPlant.Model;
 
 namespace KPlant.Sequence.Model
 {
-    public class SequenceDiagram : IRenderable, IElementCollection<ISequenceElement>
+    public partial class SequenceDiagram : IRenderable, IElementCollection<ISequenceElement>
     {
         private const string START_UML = "@startuml";
         private const string END_UML = "@enduml";

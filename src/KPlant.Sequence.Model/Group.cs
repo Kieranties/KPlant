@@ -7,31 +7,19 @@ using System.Collections;
 
 namespace KPlant.Sequence.Model
 {
-    public class Group : ISequenceElement, IElementCollection<ISequenceElement>
+    public partial class Group : ISequenceElement, IElementCollection<ISequenceElement>, IEditableLabel
     {
-        private static Group Create( GroupType type, ISequenceElement[] elements)
+        public Group(GroupType type, string label = null)
         {
-            return new Group
-            {
-                Type = type,
-                Elements = new List<ISequenceElement>(elements)
-            };
+            Type = type;
+            Label = label;
         }
 
-        public static Group Alt(params ISequenceElement[] elements) => Create(GroupType.Alt, elements);
-        public static Group Opt(params ISequenceElement[] elements) => Create(GroupType.Opt, elements);
-        public static Group Loop(params ISequenceElement[] elements) => Create(GroupType.Loop, elements);
-        public static Group Par(params ISequenceElement[] elements) => Create(GroupType.Par, elements);
-        public static Group Break(params ISequenceElement[] elements) => Create(GroupType.Break, elements);
-        public static Group Critical(params ISequenceElement[] elements) => Create(GroupType.Critical, elements);
-        public static Group For(params ISequenceElement[] elements) => Create(GroupType.Group, elements);
-        
-        
         public List<ISequenceElement> Elements { get; set; } = new List<ISequenceElement>();
 
         public string Label { get; set; } = null;
 
-        public GroupType Type { get; set; } = GroupType.Group;
+        public GroupType Type { get; }
 
         public List<Group> Else { get; set; } = new List<Group>();
 
@@ -74,21 +62,5 @@ namespace KPlant.Sequence.Model
         Break,
         Critical,
         Group
-    }
-
-
-    public static class GroupExtensions
-    {
-        public static Group WithLabel(this Group group, string label)
-        {
-            group.Label = label;
-            return group;
-        }
-
-        public static Group WithElse(this Group group, params Group[] @else)
-        {
-            group.Else.AddRange(@else);
-            return group;
-        }
-    }
+    }    
 }

@@ -9,20 +9,21 @@ namespace KPlant.Sequence.Model
     public class Ref : ISequenceElement
     {
         public static Ref Over(string label, params Participant[] participants) => new Ref(label, participants);
-
-
+        
         // multi-line wrapped statements currently not supported
 
         public Ref(string label, params Participant[] participants)
         {
             if (string.IsNullOrWhiteSpace(label))
                 throw new ArgumentOutOfRangeException(nameof(label));
+
+            Label = label;
             Participants = new List<Participant>(participants);
         }
 
         public List<Participant> Participants { get; }
 
-        public string Label { get; set; } = null;
+        public string Label { get; }
 
         public async Task Render(IRenderer renderer)
         {
