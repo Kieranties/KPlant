@@ -4,13 +4,13 @@ namespace KPlant.Rendering
 {
     public interface IRenderer
     {
-        void WriteLine(string value);
-
-        Task WriteLineAsync(string value);
-
         void Indent(int count);
 
         void Outdent(int count);
+
+        void WriteLine(string value);
+
+        Task WriteLineAsync(string value);
     }
 
     public static class RendererExtensions

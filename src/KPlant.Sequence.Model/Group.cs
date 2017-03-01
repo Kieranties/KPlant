@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using KPlant.Model;
 using KPlant.Rendering;
 using System;
-using KPlant.Model;
 using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace KPlant.Sequence.Model
 {

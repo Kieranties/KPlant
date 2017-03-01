@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace KPlant.Model
+﻿namespace KPlant.Model
 {
     public interface IEditableLabel
     {

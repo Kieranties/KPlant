@@ -1,5 +1,4 @@
-﻿using KPlant.Model;
-using KPlant.Sequence.Model;
+﻿using KPlant.Sequence.Model;
 using Xunit.Abstractions;
 
 namespace KPlant.Sequence.IntegrationTests

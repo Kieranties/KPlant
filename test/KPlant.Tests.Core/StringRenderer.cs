@@ -10,14 +10,14 @@ namespace KPlant.Tests.Core
 
         public StringRenderer() : base(new RendererOptions())
         {
-
         }
 
         public StringRenderer(RendererOptions options)
-            :base(options)
+            : base(options)
         {
-
         }
+
+        public string Value => _sb.ToString();
 
         public override void WriteLine(string value) => _sb.Append(FormatForWrite(value));
 
@@ -25,8 +25,6 @@ namespace KPlant.Tests.Core
         {
             WriteLine(value);
             return Task.CompletedTask;
-        }        
-
-        public string Value => _sb.ToString();        
+        }
     }
 }

@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using KPlant.Model;
 using KPlant.Rendering;
 using System;
-using KPlant.Model;
+using System.Threading.Tasks;
 
 namespace KPlant.Sequence.Model
 {
@@ -14,23 +14,23 @@ namespace KPlant.Sequence.Model
             Label = label;
         }
 
-        public Participant From { get; }
+        public Arrow Arrow { get; set; } = Arrow.Default;
 
-        public Participant To { get; }
+        public Participant From { get; }
 
         public string Label { get; set; } = null;
 
-        public Arrow Arrow { get; set; } = Arrow.Default;
+        public Participant To { get; }
 
         public async Task Render(IRenderer renderer)
         {
             if (renderer == null)
                 throw new ArgumentNullException(nameof(renderer));
-            
+
             if (Arrow == null)
                 throw new MissingRenderingDataException(nameof(Arrow), typeof(Message));
 
-            var output = $"{From.Id} {Arrow.Render()}";            
+            var output = $"{From.Id} {Arrow.Render()}";
             var end = $" {To.Id}";
             if (!string.IsNullOrWhiteSpace(Label))
             {

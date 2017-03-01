@@ -1,6 +1,6 @@
-﻿using System;
+﻿using KPlant.Rendering;
+using System;
 using System.Threading.Tasks;
-using KPlant.Rendering;
 
 namespace KPlant.Sequence.Model
 {

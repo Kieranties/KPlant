@@ -1,22 +1,22 @@
-﻿using KPlant.Rendering;
+﻿using KPlant.Model;
+using KPlant.Rendering;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Collections;
-using KPlant.Model;
 
 namespace KPlant.Sequence.Model
 {
     public partial class SequenceDiagram : IRenderable, IElementCollection<ISequenceElement>
     {
-        private const string START_UML = "@startuml";
         private const string END_UML = "@enduml";
+        private const string START_UML = "@startuml";
 
         public List<ISequenceElement> Elements { get; set; } = new List<ISequenceElement>();
 
-        public IEnumerator<ISequenceElement> GetEnumerator() => Elements.GetEnumerator();
-
         public void Add(ISequenceElement element) => Elements.Add(element);
+
+        public IEnumerator<ISequenceElement> GetEnumerator() => Elements.GetEnumerator();
 
         public async Task Render(IRenderer renderer)
         {

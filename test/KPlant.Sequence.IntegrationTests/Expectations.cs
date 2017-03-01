@@ -4,11 +4,56 @@
 
     public class Expectations
     {
+        public const string Activation = @"@startuml
+participant User
+User -> A : DoWork
+activate A
+A -> B : << createRequest >>
+activate B
+B -> C : DoWork
+activate C
+C --> B : WorkDone
+destroy C
+B --> A : RequestCreated
+deactivate B
+A -> User : Done
+deactivate A
+@enduml
+";
+
+        public const string ArrowColour = @"@startuml
+Bob -[#red]> Alice : hello
+Alice -[#0000FF]-> Bob : ok
+@enduml
+";
+
+        public const string ArrowStyle = @"@startuml
+Bob ->x Alice
+Bob -> Alice
+Bob ->> Alice
+Bob -\ Alice
+Bob -\\ Alice
+Bob --// Alice
+Bob ->o Alice
+Bob --\\o Alice
+@enduml
+";
+
         public const string Basic = @"@startuml
 Alice -> Bob : Authentication Request
 Bob --> Alice : Authentication Response
 Alice -> Bob : Another authentication Request
 Bob --> Alice : Another authentication Response
+@enduml
+";
+
+        public const string ColourAndAliasing = @"@startuml
+actor Bob #red
+participant Alice
+participant ""I have a really\nlong name"" as L #99FF99
+Alice -> Bob : Authentication Request
+Bob -> Alice : Authentication Response
+Bob -> L : Log transaction
 @enduml
 ";
 
@@ -25,49 +70,44 @@ Foo1 -> Foo5 : To database
 @enduml
 ";
 
-        public const string ColourAndAliasing = @"@startuml
-actor Bob #red
-participant Alice
-participant ""I have a really\nlong name"" as L #99FF99
+        public const string Delay = @"@startuml
 Alice -> Bob : Authentication Request
-Bob -> Alice : Authentication Response
-Bob -> L : Log transaction
+...
+Bob --> Alice : Authentication Response
+...5 minutes later...
+Bob --> Alice : Bye !
 @enduml
 ";
 
-        public const string NonLetterParticipants = @"@startuml
-Alice -> ""Bob()"" : Hello
-""Bob()"" -> ""This is very\nlong"" as Long
-Long --> ""Bob()"" : ok
+        public const string Divider = @"@startuml
+== Initialization ==
+Alice -> Bob : Authentication Request
+Bob --> Alice : Authentication Response
+== Repetition ==
+Alice -> Bob : Another authentication Request
+Bob --> Alice : Another authentication Response
 @enduml
 ";
 
-        public const string MessageToSelf = @"@startuml
-Alice -> Alice : This is a signal to self.\nIt also demonstrates\nmultiline \ntext
-@enduml
-";
-
-
-        //TODO: support double ended arrows
-        /*
-         * Bob <-> Alice
-         * Bob <->o Alice
-         */
-        public const string ArrowStyle = @"@startuml
-Bob ->x Alice
-Bob -> Alice
-Bob ->> Alice
-Bob -\ Alice
-Bob -\\ Alice
-Bob --// Alice
-Bob ->o Alice
-Bob --\\o Alice
-@enduml
-";
-
-        public const string ArrowColour = @"@startuml
-Bob -[#red]> Alice : hello
-Alice -[#0000FF]-> Bob : ok
+        /// <summary>
+        /// This verbatim string contains tabs!
+        /// </summary>
+        public const string Grouping = @"@startuml
+Alice -> Bob : Authentication Request
+alt successful case
+	Bob -> Alice : Authentication Accepted
+else some kind of failure
+	Bob -> Alice : Authentication Failure
+	group My own label
+		Alice -> Log : Log attack start
+		loop 1000 times
+			Alice -> Bob : DNS Attack
+		end
+		Alice -> Log : Log attack end
+	end
+else Another type of failure
+	Bob -> Alice : Please repeat
+end
 @enduml
 ";
 
@@ -75,19 +115,6 @@ Alice -[#0000FF]-> Bob : ok
 autonumber
 Bob -> Alice : Authentication Request
 Alice -> Bob : Authentication Response
-@enduml
-";
-
-        public const string MessageSequenceNumberingIncrement = @"@startuml
-autonumber
-Bob -> Alice : Authentication Request
-Alice -> Bob : Authentication Response
-autonumber 15
-Bob -> Alice : Another authentication Request
-Alice -> Bob : Another authentication Response
-autonumber 40 10
-Bob -> Alice : Yet another authentication Request
-Alice -> Bob : Yet another authentication Response
 @enduml
 ";
 
@@ -99,6 +126,19 @@ autonumber 15 ""<b>(<u>##</u>)""
 Bob -> Alice : Another authentication Request
 Alice -> Bob : Another authentication Response
 autonumber 40 10 ""<font color=red><b>Message 0  ""
+Bob -> Alice : Yet another authentication Request
+Alice -> Bob : Yet another authentication Response
+@enduml
+";
+
+        public const string MessageSequenceNumberingIncrement = @"@startuml
+autonumber
+Bob -> Alice : Authentication Request
+Alice -> Bob : Authentication Response
+autonumber 15
+Bob -> Alice : Another authentication Request
+Alice -> Bob : Another authentication Response
+autonumber 40 10
 Bob -> Alice : Yet another authentication Request
 Alice -> Bob : Yet another authentication Response
 @enduml
@@ -121,49 +161,23 @@ Alice -> Bob : Yet another authentication Response
 @enduml
 ";
 
-        public const string SplittingDiagrams = @"@startuml
-Alice -> Bob : message 1
-Alice -> Bob : message 2
-newpage
-Alice -> Bob : message 3
-Alice -> Bob : message 4
-newpage A title for the\nlast page
-Alice -> Bob : message 5
-Alice -> Bob : message 6
-@enduml
-";
-        /// <summary>
-        /// This verbatim string contains tabs!
-        /// </summary>
-        public const string Grouping = @"@startuml
-Alice -> Bob : Authentication Request
-alt successful case
-	Bob -> Alice : Authentication Accepted
-else some kind of failure
-	Bob -> Alice : Authentication Failure
-	group My own label
-		Alice -> Log : Log attack start
-		loop 1000 times
-			Alice -> Bob : DNS Attack
-		end
-		Alice -> Log : Log attack end
-	end
-else Another type of failure
-	Bob -> Alice : Please repeat
-end
-@enduml
-";
-        
-        public const string Divider = @"@startuml
-== Initialization ==
-Alice -> Bob : Authentication Request
-Bob --> Alice : Authentication Response
-== Repetition ==
-Alice -> Bob : Another authentication Request
-Bob --> Alice : Another authentication Response
+        public const string MessageToSelf = @"@startuml
+Alice -> Alice : This is a signal to self.\nIt also demonstrates\nmultiline \ntext
 @enduml
 ";
 
+        public const string NonLetterParticipants = @"@startuml
+Alice -> ""Bob()"" : Hello
+""Bob()"" -> ""This is very\nlong"" as Long
+Long --> ""Bob()"" : ok
+@enduml
+";
+
+        //TODO: support double ended arrows
+        /*
+         * Bob <-> Alice
+         * Bob <->o Alice
+         */
 
         public const string Ref = @"@startuml
 participant Alice
@@ -173,14 +187,7 @@ Alice -> Bob : hello
 ref over Bob : This can be on\nseveral lines
 @enduml
 ";
-        public const string Delay = @"@startuml
-Alice -> Bob : Authentication Request
-...
-Bob --> Alice : Authentication Response
-...5 minutes later...
-Bob --> Alice : Bye !
-@enduml
-";
+
         public const string Space = @"@startuml
 Alice -> Bob : message 1
 Bob --> Alice : ok
@@ -192,20 +199,16 @@ Alice -> Bob : message 3
 Bob --> Alice : ok
 @enduml
 ";
-        public const string Activation = @"@startuml
-participant User
-User -> A : DoWork
-activate A
-A -> B : << createRequest >>
-activate B
-B -> C : DoWork
-activate C
-C --> B : WorkDone
-destroy C
-B --> A : RequestCreated
-deactivate B
-A -> User : Done
-deactivate A
+
+        public const string SplittingDiagrams = @"@startuml
+Alice -> Bob : message 1
+Alice -> Bob : message 2
+newpage
+Alice -> Bob : message 3
+Alice -> Bob : message 4
+newpage A title for the\nlast page
+Alice -> Bob : message 5
+Alice -> Bob : message 6
 @enduml
 ";
     }

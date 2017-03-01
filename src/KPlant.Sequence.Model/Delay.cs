@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using KPlant.Model;
 using KPlant.Rendering;
-using KPlant.Model;
+using System;
+using System.Threading.Tasks;
 
 namespace KPlant.Sequence.Model
 {
@@ -18,7 +18,7 @@ namespace KPlant.Sequence.Model
         {
             if (renderer == null)
                 throw new ArgumentNullException(nameof(renderer));
-            
+
             var output = "...";
             if (!string.IsNullOrWhiteSpace(Label))
                 output += $"{Label.FixNewlinesForOutput()}...";

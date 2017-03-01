@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using KPlant.Rendering;
+﻿using KPlant.Rendering;
 
 namespace KPlant.Sequence.Model
 {
@@ -10,12 +8,12 @@ namespace KPlant.Sequence.Model
         public static Arrow Default => new Arrow();
 
         public static Arrow Dotted => new Arrow { Type = ArrowType.Dotted };
-                
-        public ArrowType Type { get; set; } = ArrowType.Normal;
 
         public string Colour { get; set; } = null;
 
         public ArrowHead Head { get; set; } = new ArrowHead();
+
+        public ArrowType Type { get; set; } = ArrowType.Normal;
 
         public string Render()
         {
@@ -45,5 +43,5 @@ namespace KPlant.Sequence.Model
     {
         Normal,
         Dotted
-    }    
+    }
 }

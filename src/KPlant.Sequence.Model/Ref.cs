@@ -1,17 +1,14 @@
-﻿using System;
+﻿using KPlant.Rendering;
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using KPlant.Rendering;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace KPlant.Sequence.Model
 {
+    ///<remarks>Multi-line wrapped statements not supported</remarks>
     public class Ref : ISequenceElement
     {
-        public static Ref Over(string label, params Participant[] participants) => new Ref(label, participants);
-        
-        // multi-line wrapped statements currently not supported
-
         public Ref(string label, params Participant[] participants)
         {
             if (string.IsNullOrWhiteSpace(label))
@@ -21,16 +18,18 @@ namespace KPlant.Sequence.Model
             Participants = new List<Participant>(participants);
         }
 
+        public string Label { get; }
+
         public List<Participant> Participants { get; }
 
-        public string Label { get; }
+        public static Ref Over(string label, params Participant[] participants) => new Ref(label, participants);
 
         public async Task Render(IRenderer renderer)
         {
             if (renderer == null)
                 throw new ArgumentNullException(nameof(renderer));
 
-            if(string.IsNullOrWhiteSpace(Label))
+            if (string.IsNullOrWhiteSpace(Label))
                 throw new MissingRenderingDataException(nameof(Label), typeof(Ref));
 
             if (Participants == null || Participants.Count == 0)
