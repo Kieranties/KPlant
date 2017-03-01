@@ -1,41 +1,27 @@
 ﻿using KPlant.Model;
-using KPlant.Rendering;
 using KPlant.Sequence.Model;
-using System.IO;
-using System.Threading.Tasks;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace KPlant.Sequence.IntegrationTests
 {
-    public class DslExpectationTests
+    public class DslIntegrationTests : IntegrationTests
     {
-        private readonly ITestOutputHelper _output;
+        public DslIntegrationTests(ITestOutputHelper output) : base(output) {}
 
-        public DslExpectationTests(ITestOutputHelper output)
+        protected override SequenceDiagram BasicTest()
         {
-            _output = output;
-        }
-
-        [Fact]
-        public async void Basic()
-        {
-
             var alice = Participant.Called("Alice");
             var bob = Participant.Called("Bob");
 
-            var diagram = SequenceDiagram.Of(
+            return SequenceDiagram.Of(
                 Message.Between(alice, bob, "Authentication Request"),
                 Message.Between(bob, alice, "Authentication Response").WithArrow(Arrow.Dotted),
                 Message.Between(alice, bob, "Another authentication Request"),
                 Message.Between(bob, alice, "Another authentication Response").WithArrow(Arrow.Dotted)
-            );
-
-            await AssertDiagram(diagram, Expectations.Basic);
+            );            
         }
-
-        [Fact]
-        public async void DeclaringParticipant()
+        
+        protected override SequenceDiagram DeclaringParticipantTest()
         {
             var p1 = Participant.Actor("Foo1");
             var p2 = Participant.Boundary("Foo2");
@@ -43,67 +29,55 @@ namespace KPlant.Sequence.IntegrationTests
             var p4 = Participant.Entity("Foo4");
             var p5 = Participant.Database("Foo5");
 
-            var diagram = SequenceDiagram.Of(
+            return SequenceDiagram.Of(
                 p1,p2,p3,p4,p5,
                 Message.Between(p1, p2,"To boundary"),
                 Message.Between(p1, p3,"To control"),
                 Message.Between(p1, p4,"To entity"),
                 Message.Between(p1, p5,"To database")
-            );
-
-            await AssertDiagram(diagram, Expectations.DeclaringParticipant);
+            );            
         }
 
-        [Fact]
-        public async void ColourAndAliasing()
+        protected override SequenceDiagram ColourAndAliasingTest()
         {
             var bob = Participant.Actor("Bob").WithColour("red");
             var alice = Participant.Called("Alice");
             var l = Participant.Called("L", "I have a really\nlong name").WithColour("99FF99");
 
-            var diagram = SequenceDiagram.Of(            
+            return SequenceDiagram.Of(            
                 bob,alice,l,
                 Message.Between(alice,bob,"Authentication Request"),
                 Message.Between(bob,alice,"Authentication Response"),
                 Message.Between(bob, l,"Log transaction")
             );
-
-            await AssertDiagram(diagram, Expectations.ColourAndAliasing);
         }
 
-        [Fact(Skip = "Lacking support late declaration of participants")]
-        public async void NonLetterParticipants()
+        protected override SequenceDiagram NonLetterParticipantsTest()
         {
             var alice = Participant.Called("Alice");
             var bob = Participant.Called("Bob()");
             var @long = Participant.Called("Long", "This is very\nlong");
 
-            var diagram = SequenceDiagram.Of(
+            return SequenceDiagram.Of(
                 Message.Between(alice, bob, "Hello"),
                 Message.Between(bob, @long),
                 Message.Between(@long, bob, "ok")
             );
-
-            await AssertDiagram(diagram, Expectations.NonLetterParticipants);
         }
 
-        [Fact]
-        public async void MessageToSelf()
+        protected override SequenceDiagram MessageToSelfTest()
         {
             var alice = Participant.Called("Alice");
-            var diagram = SequenceDiagram.Of(
+            return SequenceDiagram.Of(
                 Message.Between(alice, alice, "This is a signal to self.\nIt also demonstrates\nmultiline \ntext")
             );
-
-            await AssertDiagram(diagram, Expectations.MessageToSelf);
         }
 
-        [Fact]
-        public async void ArrowStyle()
+        protected override SequenceDiagram ArrowStyleTest()
         {
             var alice = Participant.Called("Alice");
             var bob = Participant.Called("Bob");
-            var diagram = SequenceDiagram.Of(
+            return SequenceDiagram.Of(
                 Message.Between(bob, alice).WithArrow(new Arrow{ Head = new ArrowHead{ Status = ArrowHeadStatus.Fail } }),
                 Message.Between(bob, alice),
                 Message.Between(bob, alice).WithArrow(new Arrow{ Head = new ArrowHead{ Thickness = ArrowHeadThickness.Thin } }),
@@ -113,47 +87,37 @@ namespace KPlant.Sequence.IntegrationTests
                 Message.Between(bob, alice).WithArrow(new Arrow{ Head = new ArrowHead{ Status = ArrowHeadStatus.Success } }),
                 Message.Between(bob, alice).WithArrow(new Arrow{ Type = ArrowType.Dotted, Head = new ArrowHead{ Parts = ArrowHeadParts.Top, Thickness = ArrowHeadThickness.Thin, Status = ArrowHeadStatus.Success } })
             );
-
-            await AssertDiagram(diagram, Expectations.ArrowStyle);
         }
 
-        [Fact]
-        public async void ArrowColour()
+        protected override SequenceDiagram ArrowColourTest()
         {
             var alice = Participant.Called("Alice");
             var bob = Participant.Called("Bob");
 
-            var diagram = SequenceDiagram.Of(
+            return SequenceDiagram.Of(
                 Message.Between(bob, alice, "hello").WithArrow(new Arrow{ Colour = "red" }),
                 Message.Between(alice, bob, "ok").WithArrow(new Arrow{ Colour = "0000FF", Type = ArrowType.Dotted })
             );
-
-            await AssertDiagram(diagram, Expectations.ArrowColour);
         }
 
-        [Fact]
-        public async void MessageSequenceNumbering()
+        protected override SequenceDiagram MessageSequenceNumberingTest()
         {
-
             var alice = Participant.Called("Alice");
             var bob = Participant.Called("Bob");
 
-            var diagram = SequenceDiagram.Of(
+            return SequenceDiagram.Of(
                 Numbering.Start(),
                 Message.Between(bob, alice, "Authentication Request"),
                 Message.Between(alice, bob, "Authentication Response")
             );
-
-            await AssertDiagram(diagram, Expectations.MessageSequenceNumbering);
         }
 
-        [Fact]
-        public async void MessageSequenceNumberingIncrement()
+        protected override SequenceDiagram MessageSequenceNumberingIncrementTest()
         {
             var alice = Participant.Called("Alice");
             var bob = Participant.Called("Bob");
 
-            var diagram = SequenceDiagram.Of(
+            return SequenceDiagram.Of(
                 Numbering.Start(),
                 Message.Between(bob, alice, "Authentication Request"),
                 Message.Between(alice, bob, "Authentication Response"),
@@ -164,17 +128,14 @@ namespace KPlant.Sequence.IntegrationTests
                 Message.Between(bob, alice, "Yet another authentication Request"),
                 Message.Between(alice, bob, "Yet another authentication Response")
             );
-
-            await AssertDiagram(diagram, Expectations.MessageSequenceNumberingIncrement);
         }
 
-        [Fact]
-        public async void MessageSequenceNumberingFormat()
+        protected override SequenceDiagram MessageSequenceNumberingFormatTest()
         {
             var alice = Participant.Called("Alice");
             var bob = Participant.Called("Bob");
 
-            var diagram = SequenceDiagram.Of(
+            return SequenceDiagram.Of(
                 Numbering.Start().WithFormat("<b>[000]"),
                 Message.Between(bob, alice, "Authentication Request"),
                 Message.Between(alice, bob, "Authentication Response"),
@@ -185,17 +146,14 @@ namespace KPlant.Sequence.IntegrationTests
                 Message.Between(bob, alice, "Yet another authentication Request"),
                 Message.Between(alice, bob, "Yet another authentication Response")
             );
-
-            await AssertDiagram(diagram, Expectations.MessageSequenceNumberingFormat);
         }
 
-        [Fact]
-        public async void MessageSequenceNumberingStopResume()
+        protected override SequenceDiagram MessageSequenceNumberingStopResumeTest()
         {
             var alice = Participant.Called("Alice");
             var bob = Participant.Called("Bob");
 
-            var diagram = SequenceDiagram.Of(
+            return SequenceDiagram.Of(
                 Numbering.Start(10, 10).WithFormat("<b>[000]"),
                 Message.Between(bob, alice, "Authentication Request"),
                 Message.Between(alice, bob, "Authentication Response"),
@@ -210,17 +168,14 @@ namespace KPlant.Sequence.IntegrationTests
                 Message.Between(bob, alice, "Yet another authentication Request"),
                 Message.Between(alice, bob, "Yet another authentication Response")
             );
-
-            await AssertDiagram(diagram, Expectations.MessageSequenceNumberingStopResume);
         }
 
-        [Fact]
-        public async void SplittingDiagrams()
+        protected override SequenceDiagram SplittingDiagramsTest()
         {
             var alice = Participant.Called("Alice");
             var bob = Participant.Called("Bob");
 
-            var diagram = SequenceDiagram.Of(
+            return SequenceDiagram.Of(
                 Message.Between(alice, bob, "message 1"),
                 Message.Between(alice, bob, "message 2"),
                 Separator.Page(),
@@ -230,23 +185,18 @@ namespace KPlant.Sequence.IntegrationTests
                 Message.Between(alice, bob, "message 5"),
                 Message.Between(alice, bob, "message 6")
             );
-
-            await AssertDiagram(diagram, Expectations.SplittingDiagrams);
         }
 
-        [Theory]
-        [InlineData("\t", Expectations.Grouping)]
-        [InlineData("    ", Expectations.GroupingWithSpaces)]
-        public async void Grouping(string indentMarker, string expectation)
+        protected override SequenceDiagram GroupingTest()
         {
             var alice = Participant.Called("Alice");
             var bob = Participant.Called("Bob");
             var log = Participant.Called("Log");
 
-            var diagram = SequenceDiagram.Of(
+            return SequenceDiagram.Of(
                 Message.Between(alice, bob, "Authentication Request"),
                 Group.Alt(new Message(bob, alice) { Label = "Authentication Accepted" }).Labelled("successful case")
-                    .WithElse(
+                    .Else(
                         Group.Of(
                             Message.Between(bob, alice, "Authentication Failure"),
                             Group.Of(
@@ -260,17 +210,14 @@ namespace KPlant.Sequence.IntegrationTests
                             .Labelled("Another type of failure")
                 )
             );
-
-            await AssertDiagram(diagram, expectation, indentMarker);
         }
 
-        [Fact]
-        public async void Divider()
+        protected override SequenceDiagram DividerTest()
         {
             var alice = Participant.Called("Alice");
             var bob = Participant.Called("Bob");
 
-            var diagram = SequenceDiagram.Of(
+            return SequenceDiagram.Of(
                 Separator.Divider("Initialization"),
                 Message.Between(alice, bob, "Authentication Request"),
                 Message.Between(bob, alice, "Authentication Response").WithArrow(Arrow.Dotted),
@@ -278,50 +225,41 @@ namespace KPlant.Sequence.IntegrationTests
                 Message.Between(alice, bob, "Another authentication Request"),
                 Message.Between(bob, alice, "Another authentication Response").WithArrow(Arrow.Dotted)
             );
-
-            await AssertDiagram(diagram, Expectations.Divider);
         }
 
-        [Fact]
-        public async void RefOver()
+        protected override SequenceDiagram RefBlockTest()
         {
             var alice = Participant.Called("Alice");
             var bob = Participant.Actor("Bob");
 
-            var diagram = SequenceDiagram.Of(
+            return SequenceDiagram.Of(
                 alice,bob,
                 Ref.Over("init", alice, bob),
                 Message.Between(alice, bob, "hello"),
                 Ref.Over("This can be on\nseveral lines", bob)
             );
-
-            await AssertDiagram(diagram, Expectations.Ref);
         }
 
-        [Fact]
-        public async void DelayTest()
+        protected override SequenceDiagram DelayTest()
         {
             var alice = Participant.Called("Alice");
             var bob = Participant.Called("Bob");
 
-            var diagram = SequenceDiagram.Of(
+            return SequenceDiagram.Of(
                 Message.Between(alice, bob, "Authentication Request"),
                 Separator.Delay(),
                 Message.Between(bob, alice, "Authentication Response").WithArrow(Arrow.Dotted),
                 Separator.Delay("5 minutes later"),
                 Message.Between(bob, alice, "Bye !").WithArrow(Arrow.Dotted)
             );
-
-            await AssertDiagram(diagram, Expectations.Delay);
         }
 
-        [Fact]
-        public async void Space()
+        protected override SequenceDiagram SpaceTest()
         {
             var alice = Participant.Called("Alice");
             var bob = Participant.Called("Bob");
 
-            var diagram = SequenceDiagram.Of(
+            return SequenceDiagram.Of(
                 Message.Between(alice, bob, "message 1"),
                 Message.Between(bob, alice, "ok").WithArrow(Arrow.Dotted),
                 Separator.Space(),
@@ -330,21 +268,17 @@ namespace KPlant.Sequence.IntegrationTests
                 Separator.Space(45),
                 Message.Between(alice, bob, "message 3"),
                 Message.Between(bob, alice, "ok").WithArrow(Arrow.Dotted)
-            );
-
-            await AssertDiagram(diagram, Expectations.Space);
+            );            
         }
 
-        [Fact]
-        public async void Activation()
+        protected override SequenceDiagram ActivationTest()
         {
             var user = Participant.Called("User");
             var a = Participant.Called("A");
             var b = Participant.Called("B");
             var c = Participant.Called("C");
 
-
-            var diagram = SequenceDiagram.Of(
+            return SequenceDiagram.Of(
                 user,
                 Message.Between(user, a, "DoWork"),
                 ActivationStatus.Activate(a),
@@ -359,35 +293,6 @@ namespace KPlant.Sequence.IntegrationTests
                 Message.Between(a, user, "Done"),
                 ActivationStatus.Deactivate(a)
             );
-
-            await AssertDiagram(diagram, Expectations.Activation);
-        }
-
-        private async Task AssertDiagram(SequenceDiagram diagram, string expectation, string indentMarker = "\t")
-        {
-            string result = null;
-
-            using (var stream = new MemoryStream())
-            {
-                var options = new StreamRendererOptions { IndentMarker = indentMarker };
-                var renderer = new StreamRenderer(stream, options);
-
-                await diagram.Render(renderer);
-
-                stream.Seek(0, SeekOrigin.Begin);
-
-                using (var reader = new StreamReader(stream))
-                {
-                    result = await reader.ReadToEndAsync();
-                }
-            }
-
-
-            _output.WriteLine("=== EXPECTED ===");
-            _output.WriteLine(expectation);
-            _output.WriteLine("=== ACTUAL ===");
-            _output.WriteLine(result);
-            Assert.Equal(expectation, result);
-        }
+        }        
     }
 }
